@@ -12,6 +12,7 @@ font3.png
 Freedom-10eM.ttf
 gameSelect.png
 libgdx.png
+map.png
 OpenSans-Bold.ttf
 OpenSans-BoldItalic.ttf
 OpenSans-ExtraBold.ttf

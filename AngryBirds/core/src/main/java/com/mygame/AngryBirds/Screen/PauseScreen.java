@@ -32,7 +32,7 @@ public class PauseScreen implements Screen {
         this.game = game;  // Store reference to main game instance
         stage = new Stage(new ScreenViewport());
 
-        backgroundTexture = new Texture(Gdx.files.internal("something.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("map.png"));
         backgroundImage = new Image(backgroundTexture);
         stage.addActor(backgroundImage);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("Freedom-10eM.ttf"));
