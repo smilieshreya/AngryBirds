@@ -11,8 +11,10 @@ font3.fnt
 font3.png
 Freedom-10eM.ttf
 gameSelect.png
+Large.png
 libgdx.png
 map.png
+mapE.png
 OpenSans-Bold.ttf
 OpenSans-BoldItalic.ttf
 OpenSans-ExtraBold.ttf
@@ -26,6 +28,9 @@ OpenSans-SemiboldItalic.ttf
 pig.png
 playButton.png
 quitButton.png
+Red_Bird.png
 something.png
 SsettingsButton.png
 structure.png
+Wooden_Box.png
+Wooden_Plank.png

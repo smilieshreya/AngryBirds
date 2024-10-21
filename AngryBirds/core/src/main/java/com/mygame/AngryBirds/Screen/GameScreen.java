@@ -17,6 +17,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.AngryBirds.AngryBirdsMain; // Main game class reference
+import com.mygame.AngryBirds.Objects.Bird;
+import com.mygame.AngryBirds.Objects.Pig;
+import com.mygame.AngryBirds.Objects.Structure;
 // com.mygame.AngryBirds.Objects.Bird;
 //import com.mygame.AngryBirds.Objects.Pig;
 //import com.mygame.AngryBirds.Objects.Structure;
@@ -32,16 +35,19 @@ public class GameScreen implements Screen {
     private OrthographicCamera gameCamera;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-//    private Bird bird;
-//    private Pig pig;
-//    private Structure structure;
+    private Bird bird;
+    private Pig pig;
+    private Structure structure1;
+    private Structure structure2;
+    private Structure structure3;
+    private Structure structure4;
     private AngryBirdsMain game;
 
     public GameScreen(AngryBirdsMain game){
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        backgroundTexture = new Texture(Gdx.files.internal("map.png")); //add the png
+        backgroundTexture = new Texture(Gdx.files.internal("mapE.png")); //add the png
         backgroundImage = new Image(backgroundTexture);
 
         stage.addActor(backgroundImage);
@@ -53,12 +59,18 @@ public class GameScreen implements Screen {
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
 
-        //bird = new Bird(150,200);
-        //pig = new Pig(400,150);
-        //structure = new Structure(350,100);
-//        stage.addActor(bird);
-//        stage.addActor(pig);
-//        stage.addActor(structure);
+        bird = new Bird(150,190);
+        pig = new Pig(1500,190);
+        structure1 = new Structure(1400,190);
+        structure2 = new Structure(1400,270);
+        structure3 = new Structure(1600,190);
+        structure4 = new Structure(1600,270);
+        stage.addActor(bird);
+        stage.addActor(pig);
+        stage.addActor(structure1);
+        stage.addActor(structure2);
+        stage.addActor(structure3);
+        stage.addActor(structure4);
 
         //this is to change or add new font to the skin;
         skin.add("large-font", font, BitmapFont.class);
