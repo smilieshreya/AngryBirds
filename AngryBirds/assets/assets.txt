@@ -1,0 +1,26 @@
+.gitkeep
+Apache License.txt
+background.png
+BACKGROUNDS_GE_1.png
+bird.png
+FONT.fnt
+FONT.png
+Freedom-10eM.ttf
+gameSelect.png
+libgdx.png
+OpenSans-Bold.ttf
+OpenSans-BoldItalic.ttf
+OpenSans-ExtraBold.ttf
+OpenSans-ExtraBoldItalic.ttf
+OpenSans-Italic.ttf
+OpenSans-Light.ttf
+OpenSans-LightItalic.ttf
+OpenSans-Regular.ttf
+OpenSans-Semibold.ttf
+OpenSans-SemiboldItalic.ttf
+pig.png
+playButton.png
+quitButton.png
+something.png
+SsettingsButton.png
+structure.png
