@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        backgroundTexture = new Texture(Gdx.files.internal("something.png")); //add the png
+        backgroundTexture = new Texture(Gdx.files.internal("map.png")); //add the png
         backgroundImage = new Image(backgroundTexture);
 
         stage.addActor(backgroundImage);
