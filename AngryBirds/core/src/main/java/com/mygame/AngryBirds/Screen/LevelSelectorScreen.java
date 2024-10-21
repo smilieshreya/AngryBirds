@@ -71,7 +71,7 @@ public class LevelSelectorScreen implements Screen {
     private void addListener(){
         level1Button.addListener(event -> {
             if (level1Button.isPressed()){
-                //game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game));
                 return true;
             }
             return false;
@@ -79,14 +79,14 @@ public class LevelSelectorScreen implements Screen {
 
         level2Button.addListener(event -> {
             if (level2Button.isPressed()){
-                //game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game));
                 return true;
             }
             return false;
         });
         level3Button.addListener(event -> {
             if (level3Button.isPressed()){
-                //game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game));
                 return true;
             }
             return false;

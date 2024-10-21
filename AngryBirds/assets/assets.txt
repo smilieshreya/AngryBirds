@@ -5,6 +5,10 @@ BACKGROUNDS_GE_1.png
 bird.png
 FONT.fnt
 FONT.png
+font2.fnt
+font2.png
+font3.fnt
+font3.png
 Freedom-10eM.ttf
 gameSelect.png
 libgdx.png
