@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-public class Structure extends Image {
-    public Structure(float x, float y,String img) {
-        super(new Texture(Gdx.files.internal(img)));
+public class SlingShot extends Image {
+    public SlingShot(float x, float y) {
+        super(new Texture(Gdx.files.internal("slingShotII.png")));
         this.setPosition(x, y);
     }
 }

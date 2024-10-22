@@ -14,6 +14,7 @@ gameSelect.png
 Large.png
 libgdx.png
 map.png
+map2.png
 mapE.png
 OpenSans-Bold.ttf
 OpenSans-BoldItalic.ttf
@@ -29,6 +30,7 @@ pig.png
 playButton.png
 quitButton.png
 Red_Bird.png
+slingShotII.png
 something.png
 SsettingsButton.png
 structure.png

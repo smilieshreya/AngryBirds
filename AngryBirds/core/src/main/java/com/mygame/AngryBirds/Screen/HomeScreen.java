@@ -107,7 +107,7 @@ public class HomeScreen implements Screen {
         settingsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //game.setScreen(new SettingsScreen(game)); //Switches to Settings Menu Screen;
+                game.setScreen(new SettingsScreen(game)); //Switches to Settings Menu Screen;
             }
         });
         //EXIT button exits the Game;

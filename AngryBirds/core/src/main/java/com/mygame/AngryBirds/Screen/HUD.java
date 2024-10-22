@@ -33,6 +33,7 @@ public class HUD {
 
         Table table = new Table();
         table.top();
+        table.right();
         table.setFillParent(true);
 
         ScoreLabel = new Label(String.format("Score: %07d", score), new Label.LabelStyle(customFont, Color.WHITE));
