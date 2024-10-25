@@ -1,8 +1,10 @@
 .gitkeep
 Apache License.txt
+Backbutton.png
 background.png
 BACKGROUNDS_GE_1.png
 bird.png
+cross.png
 FONT.fnt
 FONT.png
 font2.fnt
@@ -12,10 +14,13 @@ font3.png
 Freedom-10eM.ttf
 gameSelect.png
 Large.png
+levels.png
 libgdx.png
 map.png
 map2.png
 mapE.png
+menu button.png
+mute.png
 OpenSans-Bold.ttf
 OpenSans-BoldItalic.ttf
 OpenSans-ExtraBold.ttf
@@ -26,13 +31,19 @@ OpenSans-LightItalic.ttf
 OpenSans-Regular.ttf
 OpenSans-Semibold.ttf
 OpenSans-SemiboldItalic.ttf
+Pausebutton.png
 pig.png
+play.png
 playButton.png
 quitButton.png
 Red_Bird.png
+restart.png
+Settingbutton.png
 slingShotII.png
 something.png
+Soundon.png
 SsettingsButton.png
 structure.png
+tick.png
 Wooden_Box.png
 Wooden_Plank.png
