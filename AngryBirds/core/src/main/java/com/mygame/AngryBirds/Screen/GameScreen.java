@@ -1,6 +1,7 @@
 package com.mygame.AngryBirds.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.mygame.AngryBirds.AngryBirdsMain; // Main game class reference
 import com.mygame.AngryBirds.Objects.*;
 import com.mygame.AngryBirds.Objects.Bird;
@@ -43,6 +45,8 @@ public class GameScreen implements Screen {
     private Structure structure5;
     private SlingShot sling;
     private AngryBirdsMain game;
+    Label ScoreLabel;
+    BitmapFont customFont;
 
     public GameScreen(AngryBirdsMain game){
         this.game = game;
@@ -86,6 +90,14 @@ public class GameScreen implements Screen {
         buttonStyle.font = font;
         pauseButton = new TextButton("PAUSE",skin);
         restartButton = new TextButton("RESTART",skin);
+        Integer Score = HUD.getScore();
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans-ExtraBold.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 50;
+        font = generator.generateFont(parameter);
+        skin.add("large-font", font, BitmapFont.class);
+        skin.get(TextButton.TextButtonStyle.class).font = font;
+        ScoreLabel = new Label(String.format("Score: %07d", Score), new Label.LabelStyle(font, Color.BLACK));
 
         Table table = new Table();
         table.setFillParent(true);
@@ -93,6 +105,7 @@ public class GameScreen implements Screen {
         table.left();
         table.add(pauseButton).pad(10);
         table.add(restartButton).pad(10);
+        table.add(ScoreLabel).padLeft(1200);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
         addListeners();

@@ -17,27 +17,18 @@ import com.mygame.AngryBirds.AngryBirdsMain;
 public class HUD {
     public Stage stage;
     private Viewport viewPort;
-    private Integer score;
+    public static int score;
 
     Label ScoreLabel;
     BitmapFont customFont;
 
     public HUD(SpriteBatch sb){
         score = 0;
-
         viewPort = new FitViewport(AngryBirdsMain.WIDTH, AngryBirdsMain.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewPort, sb);
-
-        // Load custom font from .fnt file
         customFont = new BitmapFont(Gdx.files.internal("font3.fnt"), Gdx.files.internal("font3.png"), false);
-
-        Table table = new Table();
-        table.top();
-        table.right();
-        table.setFillParent(true);
-
-        ScoreLabel = new Label(String.format("Score: %07d", score), new Label.LabelStyle(customFont, Color.WHITE));
-        table.add(ScoreLabel);
-        stage.addActor(table);
+    }
+    public static int getScore(){
+        return score;
     }
 }
