@@ -58,9 +58,9 @@ public class lostScreen implements Screen {
         Label ScoreLabel = new Label(String.format("%07d", Score), labelStyle);
         levelLable.setPosition(575,745);
         highScorelable.setPosition(1000,745);
-        lossLabel.setPosition(515,595);
-        levelfailed.setPosition(1130,595);
-        score.setPosition(515, 495);
+        lossLabel.setPosition(515,575);
+        levelfailed.setPosition(1130,575);
+        score.setPosition(515, 475);
         ScoreLabel.setPosition(515,400);
         star = new starsBoard(1100,420,"0stars.png");
         backButton = new TextButton("BACK",skin);
