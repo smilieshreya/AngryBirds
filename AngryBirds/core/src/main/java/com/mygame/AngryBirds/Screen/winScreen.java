@@ -59,9 +59,9 @@ public class winScreen implements Screen {
         Label ScoreLabel = new Label(String.format("%07d", Score), labelStyle);
         levelLable.setPosition(575,745);
         highScorelable.setPosition(1000,745);
-        winLabel.setPosition(515,595);
-        levelCleared.setPosition(1050,595);
-        score.setPosition(515, 495);
+        winLabel.setPosition(515,575);
+        levelCleared.setPosition(1050,575);
+        score.setPosition(515, 475);
         ScoreLabel.setPosition(515,400);
         stars = new starsBoard(1100,420,"3stars.png");
         backButton = new TextButton("BACK",skin);
