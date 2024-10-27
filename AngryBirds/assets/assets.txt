@@ -1,8 +1,14 @@
 .gitkeep
+0stars.png
+1stars.png
+2stars.png
+3stars.png
+angrybirds-regular.ttf
 Apache License.txt
 Backbutton.png
 background.png
 BACKGROUNDS_GE_1.png
+before.png
 bird.png
 cross.png
 FONT.fnt
@@ -18,6 +24,7 @@ levels.png
 libgdx.png
 map.png
 map2.png
+map2_dark.png
 mapE.png
 menu button.png
 mute.png
@@ -38,6 +45,7 @@ playButton.png
 quitButton.png
 Red_Bird.png
 restart.png
+scb.png
 Settingbutton.png
 slingShotII.png
 something.png

@@ -1,4 +1,5 @@
 package com.mygame.AngryBirds.Screen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -31,6 +32,8 @@ public class GameScreen implements Screen {
     private Skin skin;
     private TextButton pauseButton;
     private TextButton restartButton;
+    private TextButton winScreenButton;
+    private TextButton lossScreenButton;
     private HUD hud;
     private Viewport gamePort;
     private OrthographicCamera gameCamera;
@@ -59,7 +62,7 @@ public class GameScreen implements Screen {
         gameCamera = new OrthographicCamera();
         gamePort = new FitViewport(AngryBirdsMain.WIDTH,AngryBirdsMain.HEIGHT,gameCamera);
         hud = new HUD(game.batch);
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("Freedom-10eM.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
@@ -90,8 +93,10 @@ public class GameScreen implements Screen {
         buttonStyle.font = font;
         pauseButton = new TextButton("PAUSE",skin);
         restartButton = new TextButton("RESTART",skin);
+        winScreenButton = new TextButton("WIN", skin);
+        lossScreenButton = new TextButton("LOSS",skin);
         Integer Score = HUD.getScore();
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans-ExtraBold.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 50;
         font = generator.generateFont(parameter);
@@ -105,7 +110,9 @@ public class GameScreen implements Screen {
         table.left();
         table.add(pauseButton).pad(10);
         table.add(restartButton).pad(10);
-        table.add(ScoreLabel).padLeft(1200);
+        table.add(winScreenButton).pad(10);
+        table.add(lossScreenButton).pad(10);
+        table.add(ScoreLabel).padLeft(950);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
         addListeners();
@@ -121,6 +128,18 @@ public class GameScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 game.setScreen(new GameScreen(game));
+            }
+        });
+        winScreenButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.setScreen(new winScreen(game));
+            }
+        });
+        lossScreenButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.setScreen(new lostScreen(game));
             }
         });
     }
