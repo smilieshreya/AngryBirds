@@ -25,6 +25,7 @@ public class PauseScreen implements Screen {
     private TextButton resumeButton;
     private TextButton levelMenuButton;
     private TextButton homeButton;
+    private TextButton muteButton;
     private AngryBirdsMain game;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -46,6 +47,7 @@ public class PauseScreen implements Screen {
         skin.get(TextButton.TextButtonStyle.class).font = font;
         // Create buttons
         resumeButton = new TextButton("RESUME", skin);
+        muteButton = new TextButton("MUTE", skin);
         levelMenuButton = new TextButton("LEVEL MENU", skin);
         homeButton = new TextButton("MAIN MENU", skin);
 
@@ -54,6 +56,8 @@ public class PauseScreen implements Screen {
         table.setFillParent(true);
         table.center();
         table.add(resumeButton).pad(10);
+        table.row();
+        table.add(muteButton).pad(10);
         table.row();
         table.add(levelMenuButton).pad(10);
         table.row();
@@ -71,6 +75,13 @@ public class PauseScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new GameScreen(game));  // Return to GameScreen
+            }
+        });
+
+        muteButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                //add mute volume option;
             }
         });
 
