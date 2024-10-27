@@ -30,13 +30,13 @@ public class PauseScreen implements Screen {
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
     public PauseScreen(AngryBirdsMain game) {
-        this.game = game;  // Store reference to main game instance
+        this.game = game;
         stage = new Stage(new ScreenViewport());
 
-        backgroundTexture = new Texture(Gdx.files.internal("map2.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("map2_dark.png"));
         backgroundImage = new Image(backgroundTexture);
         stage.addActor(backgroundImage);
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("Freedom-10eM.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);

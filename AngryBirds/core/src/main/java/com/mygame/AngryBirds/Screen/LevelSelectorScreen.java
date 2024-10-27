@@ -33,7 +33,7 @@ public class LevelSelectorScreen implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         gameCamera = new OrthographicCamera();
         gamePort = new FitViewport(AngryBirdsMain.WIDTH,AngryBirdsMain.HEIGHT,gameCamera);
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("Freedom-10eM.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 48;
         BitmapFont font = generator.generateFont(parameter);

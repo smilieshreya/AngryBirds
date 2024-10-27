@@ -31,7 +31,7 @@ public class SettingsScreen implements Screen {
         backgroundTexture = new Texture(Gdx.files.internal("background.png"));
         backgroundImage = new Image(backgroundTexture);
         stage.addActor(backgroundImage);
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("Freedom-10eM.ttf"));
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
