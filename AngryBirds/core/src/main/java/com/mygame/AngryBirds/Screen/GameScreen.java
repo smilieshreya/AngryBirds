@@ -26,6 +26,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.AngryBirds.AngryBirdsMain;
 import com.mygame.AngryBirds.Objects.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScreen implements Screen {
     private Stage stage;
     private Texture backgroundTexture;
@@ -45,6 +48,7 @@ public class GameScreen implements Screen {
     private Bird bird;
     private Pig pig;
     private Ground ground;
+    private List<Structure> structures = new ArrayList<>();
     private Structure structure1;
     private Structure structure2;
     private Structure structure3;
@@ -78,17 +82,22 @@ public class GameScreen implements Screen {
         BitmapFont font = generator.generateFont(parameter);
 
         pig = new Pig(world, 1550, 250);
-        sling = new SlingShot(world, 240, 280);
-        Vector2 catapultPosition = new Vector2(240, 280);
+        sling = new SlingShot(world, 340, 280);
+        Vector2 catapultPosition = new Vector2(340, 280);
         bird = new Bird(world, catapultPosition.x-25, catapultPosition.y);
         //Gdx.input.setInputProcessor(bird);
         float scale = 100f;
         ground = new Ground(world, 0 / scale, AngryBirdsMain.WIDTH / scale, 173 / scale);
         structure1 = new Structure(1420, 190, "Wooden_Box.png", world);
+        structures.add(structure1);
         structure2 = new Structure(1420, 270, "Wooden_Box.png", world);
+        structures.add(structure2);
         structure3 = new Structure(1600, 190, "Wooden_Box.png", world);
+        structures.add(structure3);
         structure4 = new Structure(1600, 270, "Wooden_Box.png", world);
+        structures.add(structure4);
         structure5 = new Structure(1520, 370, "Wooden_Plank.png", world);
+        structures.add(structure5);
         stage.addActor(bird);
         stage.addActor(pig);
         stage.addActor(sling);
@@ -121,6 +130,7 @@ public class GameScreen implements Screen {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(bird);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        world.setContactListener(structure2);
        // Gdx.input.setInputProcessor(stage);// Set the input processor for the stage
         addListeners();
     }
@@ -179,6 +189,10 @@ public class GameScreen implements Screen {
         game.batch.end();
         bird.render();
         bird.update();
+        Structure.destroyMarkedBodies(world);
+        for (Structure structure : structures) {
+            structure.update();
+        }
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
     }
