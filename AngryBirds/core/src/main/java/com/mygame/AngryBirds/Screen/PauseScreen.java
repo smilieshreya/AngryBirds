@@ -1,21 +1,18 @@
 package com.mygame.AngryBirds.Screen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygame.AngryBirds.AngryBirdsMain;
-
+import com.mygame.AngryBirds.Screen.InputProcessorManager;
 
 public class PauseScreen implements Screen {
     private Stage stage;
@@ -29,6 +26,7 @@ public class PauseScreen implements Screen {
     private AngryBirdsMain game;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private InputProcessorManager inputProcessorManager;
 
     public PauseScreen(AngryBirdsMain game) {
         this.game = game;
@@ -69,11 +67,13 @@ public class PauseScreen implements Screen {
         // Add listeners to buttons
         addListeners();
     }
+
     private void addListeners() {
         // Resume button takes you back to the game screen
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                inputProcessorManager.popProcessor();  // Switch input back to the GameScreen
                 game.setScreen(new GameScreen(game));  // Return to GameScreen
             }
         });
@@ -81,7 +81,7 @@ public class PauseScreen implements Screen {
         muteButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                //add mute volume option;
+                // Add mute volume option;
             }
         });
 
@@ -89,7 +89,7 @@ public class PauseScreen implements Screen {
         levelMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelSelectorScreen(game));  // Return to HomeScreen
+                game.setScreen(new LevelSelectorScreen(game));  // Return to LevelSelectorScreen
             }
         });
 
@@ -105,7 +105,8 @@ public class PauseScreen implements Screen {
 
     @Override
     public void show() {
-
+        // When the pause screen is shown, we push the pause input processor
+        InputProcessorManager.pushProcessor(stage);  // Set the input processor for the pause screen
     }
 
     @Override
@@ -116,23 +117,23 @@ public class PauseScreen implements Screen {
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void pause() {
-
+        // Handle pause logic if necessary
     }
 
     @Override
     public void resume() {
-
+        // Handle resume logic if necessary
     }
 
     @Override
     public void hide() {
-
+        // Hide logic
     }
 
     @Override

@@ -1,29 +1,30 @@
 package com.mygame.AngryBirds.Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.mygame.AngryBirds.AngryBirdsMain; // Main game class reference
+import com.mygame.AngryBirds.AngryBirdsMain;
 import com.mygame.AngryBirds.Objects.*;
-import com.mygame.AngryBirds.Objects.Bird;
-import com.mygame.AngryBirds.Objects.Pig;
-import com.mygame.AngryBirds.Objects.Structure;
 
 public class GameScreen implements Screen {
     private Stage stage;
@@ -39,8 +40,11 @@ public class GameScreen implements Screen {
     private OrthographicCamera gameCamera;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private World world;
+    private Box2DDebugRenderer debugRenderer;
     private Bird bird;
     private Pig pig;
+    private Ground ground;
     private Structure structure1;
     private Structure structure2;
     private Structure structure3;
@@ -48,33 +52,43 @@ public class GameScreen implements Screen {
     private Structure structure5;
     private SlingShot sling;
     private AngryBirdsMain game;
+    private SpriteBatch batch;
+    private InputMultiplexer inputMultiplexer;
     Label ScoreLabel;
     BitmapFont customFont;
+    private float accumulator = 0;
 
-    public GameScreen(AngryBirdsMain game){
+    public GameScreen(AngryBirdsMain game) {
         this.game = game;
-        stage = new Stage(new ScreenViewport());
+        inputMultiplexer = new InputMultiplexer();
+        batch = new SpriteBatch();
+        stage = new Stage(new FitViewport(AngryBirdsMain.WIDTH, AngryBirdsMain.HEIGHT));
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        backgroundTexture = new Texture(Gdx.files.internal("map2.png")); //add the png
+        backgroundTexture = new Texture(Gdx.files.internal("map2.png")); // Add the PNG
         backgroundImage = new Image(backgroundTexture);
-
+        world = new World(new Vector2(0, -10), true); // Adding the Box2D world
+        debugRenderer = new Box2DDebugRenderer();
         stage.addActor(backgroundImage);
         gameCamera = new OrthographicCamera();
-        gamePort = new FitViewport(AngryBirdsMain.WIDTH,AngryBirdsMain.HEIGHT,gameCamera);
+        gamePort = new FitViewport(AngryBirdsMain.WIDTH, AngryBirdsMain.HEIGHT, gameCamera);
         hud = new HUD(game.batch);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
 
-        bird = new Bird(150,190);
-        pig = new Pig(1500,190);
-        sling = new SlingShot(240,190);
-        structure1 = new Structure(1400,190,"Wooden_Box.png");
-        structure2 = new Structure(1400,270,"Wooden_Box.png");
-        structure3 = new Structure(1600,190,"Wooden_Box.png");
-        structure4 = new Structure(1600,270,"Wooden_Box.png");
-        structure5 = new Structure(1440,350,"Wooden_Plank.png");
+        pig = new Pig(world, 1550, 250);
+        sling = new SlingShot(world, 240, 280);
+        Vector2 catapultPosition = new Vector2(240, 280);
+        bird = new Bird(world, catapultPosition.x-25, catapultPosition.y);
+        //Gdx.input.setInputProcessor(bird);
+        float scale = 100f;
+        ground = new Ground(world, 0 / scale, AngryBirdsMain.WIDTH / scale, 173 / scale);
+        structure1 = new Structure(1420, 190, "Wooden_Box.png", world);
+        structure2 = new Structure(1420, 270, "Wooden_Box.png", world);
+        structure3 = new Structure(1600, 190, "Wooden_Box.png", world);
+        structure4 = new Structure(1600, 270, "Wooden_Box.png", world);
+        structure5 = new Structure(1520, 370, "Wooden_Plank.png", world);
         stage.addActor(bird);
         stage.addActor(pig);
         stage.addActor(sling);
@@ -83,27 +97,17 @@ public class GameScreen implements Screen {
         stage.addActor(structure3);
         stage.addActor(structure4);
         stage.addActor(structure5);
-
-        //this is to change or add new font to the skin;
-        skin.add("large-font", font, BitmapFont.class);
-        skin.get(TextButton.TextButtonStyle.class).font = font;
-
-        //for creation of the buttons;
+        gameCamera.zoom = 0.1f;
+        // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
-        pauseButton = new TextButton("PAUSE",skin);
-        restartButton = new TextButton("RESTART",skin);
-        winScreenButton = new TextButton("WIN", skin);
-        lossScreenButton = new TextButton("LOSS",skin);
-        Integer Score = HUD.getScore();
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 50;
-        font = generator.generateFont(parameter);
-        skin.add("large-font", font, BitmapFont.class);
         skin.get(TextButton.TextButtonStyle.class).font = font;
-        ScoreLabel = new Label(String.format("Score: %07d", Score), new Label.LabelStyle(font, Color.BLACK));
+        pauseButton = new TextButton("PAUSE", skin);
+        restartButton = new TextButton("RESTART", skin);
+        winScreenButton = new TextButton("WIN", skin);
+        lossScreenButton = new TextButton("LOSS", skin);
 
+        ScoreLabel = new Label("Score: 0", new Label.LabelStyle(font, Color.BLACK));
         Table table = new Table();
         table.setFillParent(true);
         table.top();
@@ -114,20 +118,25 @@ public class GameScreen implements Screen {
         table.add(lossScreenButton).pad(10);
         table.add(ScoreLabel).padLeft(950);
         stage.addActor(table);
-        Gdx.input.setInputProcessor(stage);
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(bird);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+       // Gdx.input.setInputProcessor(stage);// Set the input processor for the stage
         addListeners();
     }
+
     private void addListeners() {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new PauseScreen(game));  // Switch to PauseScreen
+                com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
+                game.setScreen(new PauseScreen(game)); // Switch to PauseScreen
             }
         });
         restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen(game)); // Restart the game
             }
         });
         winScreenButton.addListener(new ChangeListener() {
@@ -146,7 +155,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        //InputProcessorManager.pushProcessor(bird);
+        //InputProcessorManager.pushProcessor(stage);
+        //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(stage);
+        // Push the main game processor
     }
 
     @Override
@@ -155,28 +167,40 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
         stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
 
+        for (Actor actor : stage.getActors()) {
+            if (actor instanceof Structure) {
+                ((Structure) actor).update();
+            }
+        }
+        stage.draw();
+        game.batch.begin();
+        //game.batch.draw(bird.getTexture(), 200, 300, 65, 65); // Replace with actual bird dimensions
+        game.batch.end();
+        bird.render();
+        bird.update();
+        debugRenderer.render(world, gameCamera.combined);
+        world.step(1 / 60f, 6, 2);
     }
 
     @Override
     public void resize(int i, int i1) {
-
+        gamePort.update(i, i1);
     }
 
     @Override
     public void pause() {
-
+        // Handle pause logic
     }
 
     @Override
     public void resume() {
-
+        // Handle resume logic
     }
 
     @Override
     public void hide() {
-
+        // Handle hide logic
     }
 
     @Override
@@ -184,5 +208,8 @@ public class GameScreen implements Screen {
         stage.dispose();
         backgroundTexture.dispose();
         skin.dispose();
+        batch.dispose();
+        bird.getTexture().dispose();
+        if (generator != null) generator.dispose();
     }
 }
