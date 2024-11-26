@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.AngryBirds.AngryBirdsMain;
+import com.mygame.AngryBirds.Managers.*;
 import com.mygame.AngryBirds.Objects.*;
 
 import java.util.ArrayList;
@@ -46,9 +47,12 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private Bird bird;
+    private Bird bird2;
     private Pig pig;
     private Ground ground;
     private List<Structure> structures = new ArrayList<>();
+    private List<Pig> pigs = new ArrayList<>();
+    private List<Bird> birds = new ArrayList<>();
     private Structure structure1;
     private Structure structure2;
     private Structure structure3;
@@ -58,8 +62,14 @@ public class GameScreen implements Screen {
     private AngryBirdsMain game;
     private SpriteBatch batch;
     private InputMultiplexer inputMultiplexer;
-    Label ScoreLabel;
-    BitmapFont customFont;
+    private DelegatingContactListener delegatingContactListener;
+    private StructureContactListener structureListener;
+    private BirdContactListener birdListener;
+    private PigContactListener pigListener;
+    private Label ScoreLabel;
+    private BitmapFont customFont;
+    private BirdManager birdManager;
+    private Bird currentBird;
     private float accumulator = 0;
 
     public GameScreen(AngryBirdsMain game) {
@@ -81,24 +91,35 @@ public class GameScreen implements Screen {
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
 
-        pig = new Pig(world, 1550, 250);
+        pig = new BigPig(world, 1550, 250);
+        pigListener = new PigContactListener();
         sling = new SlingShot(world, 340, 280);
-        Vector2 catapultPosition = new Vector2(340, 280);
-        bird = new Bird(world, catapultPosition.x-25, catapultPosition.y);
-        //Gdx.input.setInputProcessor(bird);
+        Vector2 catapultPosition = new Vector2(340-25, 280);
+        birdManager = new BirdManager(world, catapultPosition);
+        bird = new RedBird(world, catapultPosition.x, catapultPosition.y);
+        bird2 = new BlueBird(world,200,280);
+
+        birdManager.addBird(bird);
+        birdManager.addBird(bird2);
+
+        birdManager.resetNextBird();
+
+
         float scale = 100f;
         ground = new Ground(world, 0 / scale, AngryBirdsMain.WIDTH / scale, 173 / scale);
-        structure1 = new Structure(1420, 190, "Wooden_Box.png", world);
+        structure1 = new WoodStructure(1420, 190, "Wooden_Box.png", world);
         structures.add(structure1);
-        structure2 = new Structure(1420, 270, "Wooden_Box.png", world);
+        structure2 = new WoodStructure(1420, 270, "Wooden_Box.png", world);
         structures.add(structure2);
-        structure3 = new Structure(1600, 190, "Wooden_Box.png", world);
+        structure3 = new WoodStructure(1600, 190, "Wooden_Box.png", world);
         structures.add(structure3);
-        structure4 = new Structure(1600, 270, "Wooden_Box.png", world);
+        structure4 = new WoodStructure(1600, 270, "Wooden_Box.png", world);
         structures.add(structure4);
-        structure5 = new Structure(1520, 370, "Wooden_Plank.png", world);
+        structure5 = new WoodStructure(1520, 370, "Wooden_Plank.png", world);
         structures.add(structure5);
+        structureListener = new StructureContactListener();
         stage.addActor(bird);
+        stage.addActor(bird2);
         stage.addActor(pig);
         stage.addActor(sling);
         stage.addActor(structure1);
@@ -127,11 +148,18 @@ public class GameScreen implements Screen {
         table.add(lossScreenButton).pad(10);
         table.add(ScoreLabel).padLeft(950);
         stage.addActor(table);
+
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(bird);
+        inputMultiplexer.addProcessor(bird2);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        world.setContactListener(structure2);
-       // Gdx.input.setInputProcessor(stage);// Set the input processor for the stage
+
+        delegatingContactListener = new DelegatingContactListener();
+        delegatingContactListener.addListener(structureListener);
+        delegatingContactListener.addListener(pigListener);
+        //delegatingContactListener.addListener(birdListener);
+        world.setContactListener(delegatingContactListener);
+        // Gdx.input.setInputProcessor(stage);// Set the input processor for the stage
         addListeners();
     }
 
@@ -163,6 +191,7 @@ public class GameScreen implements Screen {
         });
     }
 
+
     @Override
     public void show() {
         //InputProcessorManager.pushProcessor(bird);
@@ -184,14 +213,22 @@ public class GameScreen implements Screen {
             }
         }
         stage.draw();
-        game.batch.begin();
-        //game.batch.draw(bird.getTexture(), 200, 300, 65, 65); // Replace with actual bird dimensions
-        game.batch.end();
+
         bird.render();
         bird.update();
-        Structure.destroyMarkedBodies(world);
+        bird2.render();
+        bird2.update();
+
+        StructureContactListener.destroyMarkedBodies(world);
+        Pig.destroyMarkedBodies(world);
         for (Structure structure : structures) {
             structure.update();
+        }
+        if (birdManager.isBirdFired()) {
+            inputMultiplexer.removeProcessor(bird);
+            System.out.println("Bird is fired and current bird is null");
+            System.out.println("Birds left in queue: " + birdManager.getBirdCount());
+            birdManager.resetNextBird();
         }
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
@@ -223,7 +260,7 @@ public class GameScreen implements Screen {
         backgroundTexture.dispose();
         skin.dispose();
         batch.dispose();
-        bird.getTexture().dispose();
+        //RedBird.getTexture().dispose();
         if (generator != null) generator.dispose();
     }
 }

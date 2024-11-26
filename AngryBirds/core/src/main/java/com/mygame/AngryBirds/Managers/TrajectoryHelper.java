@@ -1,4 +1,4 @@
-package com.mygame.AngryBirds.Objects;
+package com.mygame.AngryBirds.Managers;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 

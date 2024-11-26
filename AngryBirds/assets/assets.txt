@@ -9,7 +9,9 @@ Backbutton.png
 background.png
 BACKGROUNDS_GE_1.png
 before.png
+bigRed.png
 bird.png
+blueBird.png
 cross.png
 FONT.fnt
 FONT.png

@@ -12,81 +12,85 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Bird extends Actor implements InputProcessor {
-    private Texture birdTexture;
-    private Body birdBody;
-    private boolean isDragging = false;
-    private Vector2 initialPosition;
-    private Vector2 dragPosition;
-    private World world;
-    private SpriteBatch batch;
-    private float x_cord;
-    private float y_cord;
+public abstract class Bird extends Actor implements InputProcessor {
+    private Vector2 slingshotPosition;
+    public Texture birdTexture;
+    public Body birdBody;
+    public boolean isDragging = false;
+    public boolean isReadyToFire = false;  // Track if bird is ready to be fired
+    public Vector2 initialPosition;
+    public Vector2 dragPosition;
+    public World world;
+    public SpriteBatch batch;
+    public float x_cord;
+    public float y_cord;
 
     public Bird(World world, float x, float y) {
         this.x_cord = x;
         this.y_cord = y;
         this.world = world;
-        this.birdTexture = new Texture(Gdx.files.internal("Red_Bird.png"));
         this.initialPosition = new Vector2(x, y);
+        this.slingshotPosition = new Vector2(340-25, 280);
         this.dragPosition = new Vector2(x, y);
         this.batch = new SpriteBatch();
 
-        createBirdBody(x, y+100);
+        // Initialize bird texture from child class
+        this.birdTexture = new Texture(Gdx.files.internal(getTexturePath()));
 
-        // Register this class as input processor
-        //Gdx.input.setInputProcessor(this);
+        createBirdBody(x, y + 100);
+
         System.out.println("Bird InputProcessor Registered");
     }
 
-    private void createBirdBody(float x, float y) {
+    protected abstract String getTexturePath(); // Child classes must define the texture path
+
+    public void createBirdBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x / 100f, y / 100f);
-        bodyDef.fixedRotation = false;  // Allow rotation
-        // Convert to world coordinates
+        bodyDef.fixedRotation = false;
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(15 / 100f);  // Radius in world units
+        shape.setRadius(15 / 100f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.friction = 0.3f;
         fixtureDef.density = 1.0f;
-        fixtureDef.restitution = 0.3f; // Bounciness
+        fixtureDef.restitution = 0.3f;
+
         birdBody = world.createBody(bodyDef);
         birdBody.setLinearDamping(0.5f);
         birdBody.createFixture(fixtureDef);
-        //birdBody.setAngularVelocity(2f);
+
         shape.dispose();
     }
 
     public void update() {
-            dragPosition.set(birdBody.getPosition().x * 100, birdBody.getPosition().y * 100);
-            //System.out.println("Bird Position: " + birdBody.getPosition());// Sync texture position with body position
+        // Sync bird's drag position with its body position
+        dragPosition.set(birdBody.getPosition().x * 100, birdBody.getPosition().y * 100);
     }
-
 
     public void render() {
         batch.begin();
         float rotation = (float) Math.toDegrees(birdBody.getAngle());
 
         batch.draw(birdTexture,
-                birdBody.getPosition().x * 100,  // x position (centered)
-                birdBody.getPosition().y * 100,  // y position (centered)
-                32.5f,  // originX
-                32.5f,  // originY
-                65,     // width
-                65,     // height
-                1,      // scaleX
-                1,      // scaleY
-                rotation,   // rotation
-                0,      // srcX
-                0,      // srcY
-                birdTexture.getWidth(),    // srcWidth
-                birdTexture.getHeight(),   // srcHeight
-                false,  // flipX
-                false   // flipY
+                birdBody.getPosition().x * 100,
+                birdBody.getPosition().y * 100,
+                32.5f,
+                32.5f,
+                65,
+                65,
+                1,
+                1,
+                rotation,
+                0,
+                0,
+                birdTexture.getWidth(),
+                birdTexture.getHeight(),
+                false,
+                false
         );
         batch.end();
     }
@@ -95,13 +99,28 @@ public class Bird extends Actor implements InputProcessor {
         return birdTexture;
     }
 
+    public Body getBody() {
+        return birdBody;
+    }
+
+    public void resetBird() {
+        // Reset bird to its initial position and set it to "ready-to-fire" state
+        birdBody.setTransform(slingshotPosition.x/100, slingshotPosition.y/70, 0);
+        birdBody.setLinearVelocity(0, 0);
+        birdBody.setAngularVelocity(0);
+        isReadyToFire = true;
+        isDragging = false;
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("Touch Down at: " + screenX + ", " + screenY); // Log touchDown
-        Vector2 worldPosition = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);  // Convert to world coordinates
-        if (worldPosition.dst(dragPosition) < 50) { // Check if click is near the bird
-            isDragging = true;
-            return true;
+        // Only allow dragging if the bird is ready to be fired
+        if (isReadyToFire) {
+            Vector2 worldPosition = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+            if (worldPosition.dst(dragPosition) < 50) {
+                isDragging = true;
+                return true;
+            }
         }
         return false;
     }
@@ -109,32 +128,21 @@ public class Bird extends Actor implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (isDragging) {
-            // Convert touch position from screen coordinates to world coordinates (flipping Y-axis)
             dragPosition.set(screenX, Gdx.graphics.getHeight() - screenY);
-            System.out.println("Dragging to: " + dragPosition);  // Log the dragging position
             return true;
         }
         return false;
     }
 
-
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (isDragging) {
             isDragging = false;
-
-            // Calculate the velocity vector
-            Vector2 launchVelocity = initialPosition.cpy().sub(dragPosition).scl(5f);  // Adjust scaling factor for launch strength
-
-            // Apply the velocity to the bird body
-            birdBody.setLinearVelocity(launchVelocity.x / 100, launchVelocity.y / 100);  // Apply linear velocity to the body
-            System.out.println("Bird launched with velocity: " + launchVelocity);  // Log launch velocity
+            Vector2 launchVelocity = initialPosition.cpy().sub(dragPosition).scl(5f);
+            birdBody.setLinearVelocity(launchVelocity.x / 100, launchVelocity.y / 100);
+            isReadyToFire = false;  // Bird is no longer ready once it is fired
         }
         return true;
-    }
-
-    public Body getBody() {
-        return birdBody;
     }
 
     @Override
@@ -142,19 +150,10 @@ public class Bird extends Actor implements InputProcessor {
         return false;
     }
 
-    // Unused methods from InputProcessor
-    @Override
-    public boolean keyDown(int keycode) { return false; }
-
-    @Override
-    public boolean keyUp(int keycode) { return false; }
-
-    @Override
-    public boolean keyTyped(char character) { return false; }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) { return false; }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) { return false; }
+    // Unused methods
+    @Override public boolean keyDown(int keycode) { return false; }
+    @Override public boolean keyUp(int keycode) { return false; }
+    @Override public boolean keyTyped(char character) { return false; }
+    @Override public boolean mouseMoved(int screenX, int screenY) { return false; }
+    @Override public boolean scrolled(float amountX, float amountY) { return false; }
 }

@@ -1,3 +1,4 @@
+// Abstract Structure class
 package com.mygame.AngryBirds.Objects;
 
 import com.badlogic.gdx.Gdx;
@@ -6,14 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Structure extends Image implements ContactListener {
-    private Body body;
-    private World world;
-    private static final float PPM = 100f; // Pixels per meter
-    private static final List<Body> bodiesToDestroy = new ArrayList<>();
+public abstract class Structure extends Image {
+    protected Body body;
+    protected World world;
+    protected static final float PPM = 100f; // Pixels per meter
 
     // Constructor for Structure
     public Structure(float x, float y, String img, World world) {
@@ -26,6 +23,9 @@ public class Structure extends Image implements ContactListener {
         // Create Box2D Body and Fixture for Structure
         createPhysicsBody(x / PPM, y / PPM);
     }
+
+    // Abstract method to define structure-specific properties
+    protected abstract void defineFixture(FixtureDef fixtureDef);
 
     // Initialize Box2D body for collision and physics
     private void createPhysicsBody(float x, float y) {
@@ -40,9 +40,9 @@ public class Structure extends Image implements ContactListener {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.3f;
+
+        // Call the abstract method to allow subclasses to customize fixture properties
+        defineFixture(fixtureDef);
 
         body.createFixture(fixtureDef);
         shape.dispose();
@@ -55,52 +55,7 @@ public class Structure extends Image implements ContactListener {
         setPosition((position.x * PPM) - getWidth() / 2, (position.y * PPM) - getHeight() / 2);
     }
 
-    public void onCollision() {
-        if (body.getLinearVelocity().len() > 5) {
-            breakStructure();
-        }
+    public Body getBody() {
+        return body;
     }
-
-    private void breakStructure() {
-        // Mark the body for destruction
-        if (body != null) {
-            bodiesToDestroy.add(body);
-            this.remove();
-        }
-
-        // Remove the sprite (this actor) from the stage
-//        if (this.getParent() != null) {
-//            this.remove(); // Ensures the sprite is no longer rendered
-//        }
-    }
-
-    public static void destroyMarkedBodies(World world) {
-        for (Body body : bodiesToDestroy) {
-            world.destroyBody(body);
-        }
-        bodiesToDestroy.clear();
-    }
-
-    @Override
-    public void beginContact(Contact contact) {
-        Body bodyA = contact.getFixtureA().getBody();
-        Body bodyB = contact.getFixtureB().getBody();
-
-        if (bodyA == body || bodyB == body) {
-            Body otherBody = (bodyA == body) ? bodyB : bodyA;
-            float impactVelocity = otherBody.getLinearVelocity().len();
-            if (impactVelocity > 2.5f) {
-                breakStructure();
-            }
-        }
-    }
-
-    @Override
-    public void endContact(Contact contact) {}
-
-    @Override
-    public void preSolve(Contact contact, Manifold manifold) {}
-
-    @Override
-    public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
 }
