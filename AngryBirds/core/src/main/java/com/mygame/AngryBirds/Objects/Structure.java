@@ -32,6 +32,7 @@ public abstract class Structure extends Image {
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.fixedRotation = false;
 
         body = world.createBody(bodyDef);
 

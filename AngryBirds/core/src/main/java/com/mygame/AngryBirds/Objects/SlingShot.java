@@ -31,13 +31,13 @@ public class SlingShot extends Actor {
 
     private void createBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x / 100f, y / 100f); // Convert pixels to world units
+        bodyDef.position.set((x / 100f)-0.47f, y / 100f); // Convert pixels to world units
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((width / 2), (height / 2)-1f);
+        shape.setAsBox((width / 2)-0.1f, (height / 2)-0.95f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -53,7 +53,7 @@ public class SlingShot extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         Vector2 position = body.getPosition();
         batch.draw(texture,
-                position.x * 100 - width / 2 * 100,
+                36+position.x * 100 - width / 2 * 100,
                 8+position.y * 100 - height / 2 * 100,
                 width * 100,
                 height * 100);

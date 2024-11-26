@@ -53,20 +53,6 @@ public class BirdManager {
     }
 
     // Launch the current bird and set the next bird ready
-    public void launchCurrentBird() {
-        if (currentBird != null) {
-
-            // Fire the bird with a potentially dynamic impulse
-            currentBird.isReadyToFire = true; // Bird is no longer ready
-            currentBird = null;
-        }
-    }
-
-    private Vector2 calculateLaunchImpulse() {
-        // Calculate launch impulse based on slingshot stretch, angle, etc.
-        // This is just an example
-        return new Vector2(10, 5); // Adjust based on your game's mechanics
-    }
 
     // Check if there are birds left to launch
     public boolean hasBirdsLeft() {
@@ -86,7 +72,7 @@ public class BirdManager {
             Vector2 velocity = currentBird.getBody().getLinearVelocity();
             Vector2 birdPosition = currentBird.getBody().getPosition();
             // Check if the bird's velocity is above a threshold
-            return (velocity.len() > 9f && birdPosition.dst(slingshotPosition) > 15f); // Adjust threshold based on your game
+            return (velocity.len() > 9f && birdPosition.dst(slingshotPosition) > 25f); // Adjust threshold based on your game
         }
         return false;
     }

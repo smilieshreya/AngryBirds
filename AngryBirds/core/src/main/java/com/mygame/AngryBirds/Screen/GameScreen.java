@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.AngryBirds.AngryBirdsMain;
@@ -71,6 +72,7 @@ public class GameScreen implements Screen {
     private BirdManager birdManager;
     private Bird currentBird;
     private float accumulator = 0;
+    private  Vector2 catapultPosition;
 
     public GameScreen(AngryBirdsMain game) {
         this.game = game;
@@ -94,14 +96,13 @@ public class GameScreen implements Screen {
         pig = new BigPig(world, 1550, 250);
         pigListener = new PigContactListener();
         sling = new SlingShot(world, 340, 280);
-        Vector2 catapultPosition = new Vector2(340-25, 280);
+        catapultPosition = new Vector2(315, 285);
         birdManager = new BirdManager(world, catapultPosition);
         bird = new RedBird(world, catapultPosition.x, catapultPosition.y);
-        bird2 = new BlueBird(world,200,280);
+        bird2 = new BlueBird(world,190,280);
 
         birdManager.addBird(bird);
         birdManager.addBird(bird2);
-
         birdManager.resetNextBird();
 
 
@@ -127,7 +128,7 @@ public class GameScreen implements Screen {
         stage.addActor(structure3);
         stage.addActor(structure4);
         stage.addActor(structure5);
-        gameCamera.zoom = 0.1f;
+        gameCamera.zoom = 0.07f;
         // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -226,9 +227,14 @@ public class GameScreen implements Screen {
         }
         if (birdManager.isBirdFired()) {
             inputMultiplexer.removeProcessor(bird);
-            System.out.println("Bird is fired and current bird is null");
-            System.out.println("Birds left in queue: " + birdManager.getBirdCount());
-            birdManager.resetNextBird();
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    System.out.println("Resetting the next bird...");
+                    birdManager.resetNextBird(); // Call your bird reset method here
+                }
+            }, 2);
+
         }
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);

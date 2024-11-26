@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,14 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class Bird extends Actor implements InputProcessor {
     private Vector2 slingshotPosition;
+    private float maxDragDistance = 150f;
     public Texture birdTexture;
     public Body birdBody;
     public boolean isDragging = false;
-    public boolean isReadyToFire = false;  // Track if bird is ready to be fired
+    public boolean isReadyToFire = false;
     public Vector2 initialPosition;
     public Vector2 dragPosition;
     public World world;
     public SpriteBatch batch;
+    public ShapeRenderer shapeRenderer;
     public float x_cord;
     public float y_cord;
 
@@ -30,9 +33,10 @@ public abstract class Bird extends Actor implements InputProcessor {
         this.y_cord = y;
         this.world = world;
         this.initialPosition = new Vector2(x, y);
-        this.slingshotPosition = new Vector2(340-25, 280);
+        this.slingshotPosition = new Vector2(340 - 25, 280);
         this.dragPosition = new Vector2(x, y);
         this.batch = new SpriteBatch();
+        this.shapeRenderer = new ShapeRenderer();
 
         // Initialize bird texture from child class
         this.birdTexture = new Texture(Gdx.files.internal(getTexturePath()));
@@ -42,7 +46,7 @@ public abstract class Bird extends Actor implements InputProcessor {
         System.out.println("Bird InputProcessor Registered");
     }
 
-    protected abstract String getTexturePath(); // Child classes must define the texture path
+    protected abstract String getTexturePath();
 
     public void createBirdBody(float x, float y) {
         BodyDef bodyDef = new BodyDef();
@@ -67,7 +71,6 @@ public abstract class Bird extends Actor implements InputProcessor {
     }
 
     public void update() {
-        // Sync bird's drag position with its body position
         dragPosition.set(birdBody.getPosition().x * 100, birdBody.getPosition().y * 100);
     }
 
@@ -93,6 +96,13 @@ public abstract class Bird extends Actor implements InputProcessor {
                 false
         );
         batch.end();
+
+        if (isDragging) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 0, 0, 1);
+            shapeRenderer.rectLine(slingshotPosition, dragPosition, 5);
+            shapeRenderer.end();
+        }
     }
 
     public Texture getTexture() {
@@ -104,8 +114,7 @@ public abstract class Bird extends Actor implements InputProcessor {
     }
 
     public void resetBird() {
-        // Reset bird to its initial position and set it to "ready-to-fire" state
-        birdBody.setTransform(slingshotPosition.x/100, slingshotPosition.y/70, 0);
+        birdBody.setTransform(slingshotPosition.x / 100, slingshotPosition.y / 90, 0);
         birdBody.setLinearVelocity(0, 0);
         birdBody.setAngularVelocity(0);
         isReadyToFire = true;
@@ -114,7 +123,6 @@ public abstract class Bird extends Actor implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Only allow dragging if the bird is ready to be fired
         if (isReadyToFire) {
             Vector2 worldPosition = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
             if (worldPosition.dst(dragPosition) < 50) {
@@ -128,7 +136,12 @@ public abstract class Bird extends Actor implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (isDragging) {
-            dragPosition.set(screenX, Gdx.graphics.getHeight() - screenY);
+            Vector2 worldPosition = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+            Vector2 slingshotToDrag = new Vector2(worldPosition).sub(slingshotPosition);
+            if (slingshotToDrag.len() > maxDragDistance) {
+                slingshotToDrag.setLength(maxDragDistance);
+            }
+            dragPosition.set(slingshotPosition).add(slingshotToDrag);
             return true;
         }
         return false;
@@ -138,9 +151,9 @@ public abstract class Bird extends Actor implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (isDragging) {
             isDragging = false;
-            Vector2 launchVelocity = initialPosition.cpy().sub(dragPosition).scl(5f);
-            birdBody.setLinearVelocity(launchVelocity.x / 100, launchVelocity.y / 100);
-            isReadyToFire = false;  // Bird is no longer ready once it is fired
+            Vector2 launchVelocity = slingshotPosition.cpy().sub(dragPosition).scl(0.1f);  // Adjust the scaling factor
+            birdBody.setLinearVelocity(launchVelocity.x, launchVelocity.y);
+            isReadyToFire = false;
         }
         return true;
     }
@@ -150,7 +163,6 @@ public abstract class Bird extends Actor implements InputProcessor {
         return false;
     }
 
-    // Unused methods
     @Override public boolean keyDown(int keycode) { return false; }
     @Override public boolean keyUp(int keycode) { return false; }
     @Override public boolean keyTyped(char character) { return false; }
