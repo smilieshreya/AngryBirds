@@ -2,6 +2,9 @@
 eclipse.project.name = appName + '-core'
 
 dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.0'
+  api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
   api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
   api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -11,5 +14,15 @@ dependencies {
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+  }
+}
+tasks.test {
+  useJUnitPlatform() // Add this to specify JUnit 5
+}
+
+// Optional: Configure Gradle logging for tests
+tasks.withType(Test) {
+  testLogging {
+    events "passed", "skipped", "failed"
   }
 }
