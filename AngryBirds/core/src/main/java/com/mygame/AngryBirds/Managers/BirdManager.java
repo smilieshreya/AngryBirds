@@ -72,7 +72,7 @@ public class BirdManager {
             Vector2 velocity = currentBird.getBody().getLinearVelocity();
             Vector2 birdPosition = currentBird.getBody().getPosition();
             // Check if the bird's velocity is above a threshold
-            return (velocity.len() > 9f && birdPosition.dst(slingshotPosition) > 25f); // Adjust threshold based on your game
+            return (velocity.len() > 9f && birdPosition.dst(slingshotPosition) > 5f); // Adjust threshold based on your game
         }
         return false;
     }

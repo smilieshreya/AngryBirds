@@ -27,11 +27,13 @@ public abstract class Bird extends Actor implements InputProcessor {
     public ShapeRenderer shapeRenderer;
     public float x_cord;
     public float y_cord;
+    public boolean wasFired;
 
     public Bird(World world, float x, float y) {
         this.x_cord = x;
         this.y_cord = y;
         this.world = world;
+        this.wasFired = false;
         this.initialPosition = new Vector2(x, y);
         this.slingshotPosition = new Vector2(340 - 25, 280);
         this.dragPosition = new Vector2(x, y);
@@ -103,6 +105,10 @@ public abstract class Bird extends Actor implements InputProcessor {
             shapeRenderer.rectLine(slingshotPosition, dragPosition, 5);
             shapeRenderer.end();
         }
+    }
+    public void launch() {
+        isReadyToFire = false;
+        System.out.println("Bird launched");
     }
 
     public Texture getTexture() {

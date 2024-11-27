@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private Bird bird;
     private Bird bird2;
+    private Bird bird3;
     private Pig pig;
     private Ground ground;
     private List<Structure> structures = new ArrayList<>();
@@ -99,12 +100,13 @@ public class GameScreen implements Screen {
         catapultPosition = new Vector2(315, 285);
         birdManager = new BirdManager(world, catapultPosition);
         bird = new RedBird(world, catapultPosition.x, catapultPosition.y);
-        bird2 = new BlueBird(world,190,280);
+        bird2 = new BlueBird(world,200,280);
+        //bird3 = new YellowBird(world,120,280);
 
         birdManager.addBird(bird);
         birdManager.addBird(bird2);
+        //birdManager.addBird(bird3);
         birdManager.resetNextBird();
-
 
         float scale = 100f;
         ground = new Ground(world, 0 / scale, AngryBirdsMain.WIDTH / scale, 173 / scale);
@@ -121,6 +123,7 @@ public class GameScreen implements Screen {
         structureListener = new StructureContactListener();
         stage.addActor(bird);
         stage.addActor(bird2);
+        //stage.addActor(bird3);
         stage.addActor(pig);
         stage.addActor(sling);
         stage.addActor(structure1);
@@ -153,6 +156,7 @@ public class GameScreen implements Screen {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(bird);
         inputMultiplexer.addProcessor(bird2);
+        //inputMultiplexer.addProcessor(bird3);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         delegatingContactListener = new DelegatingContactListener();
@@ -219,22 +223,23 @@ public class GameScreen implements Screen {
         bird.update();
         bird2.render();
         bird2.update();
-
+        //bird3.render();
+        //bird3.update();
         StructureContactListener.destroyMarkedBodies(world);
         Pig.destroyMarkedBodies(world);
         for (Structure structure : structures) {
             structure.update();
         }
-        if (birdManager.isBirdFired()) {
-            inputMultiplexer.removeProcessor(bird);
+        if (birdManager.isBirdFired() && !birdManager.getCurrentBird().wasFired) {
+            System.out.println("Trigger");
+            inputMultiplexer.removeProcessor(birdManager.getCurrentBird());
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    System.out.println("Resetting the next bird...");
+                    birdManager.getCurrentBird().wasFired = true;
                     birdManager.resetNextBird(); // Call your bird reset method here
                 }
             }, 2);
-
         }
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);

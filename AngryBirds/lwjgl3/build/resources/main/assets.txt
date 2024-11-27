@@ -57,3 +57,4 @@ structure.png
 tick.png
 Wooden_Box.png
 Wooden_Plank.png
+yellowBird.png
