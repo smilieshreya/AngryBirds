@@ -3,6 +3,8 @@ package com.mygame.AngryBirds.Managers;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 import com.mygame.AngryBirds.Objects.Bird;
+import com.mygame.AngryBirds.Screen.GameScreen;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -30,25 +32,19 @@ public class BirdManager {
 
     // Get the next bird and reset it to the slingshot position, making it ready
     public void resetNextBird() {
-        System.out.println("Attempting to reset next bird");
-        System.out.println("Birds left in queue: " + birdQueue.size());
-
         if (hasBirdsLeft()) {
             currentBird = getNextBird();
-
-            System.out.println("Current bird retrieved: " + currentBird);
-            System.out.println("Current bird initial position: " +
-                    currentBird.getBody().getPosition().x * 100 + ", " +
-                    currentBird.getBody().getPosition().y * 100);
-
+            if (currentBird != null) {
+                currentBird.wasFired = false;
+                currentBird.resetBird();
+                System.out.println("Bird reset successful");
+            } else {
+                System.out.println("Current bird is NULL");
+            }
             currentBird.resetBird();
-
-            System.out.println("After reset, bird position: " +
-                    currentBird.getBody().getPosition().x * 100 + ", " +
-                    currentBird.getBody().getPosition().y * 100);
-
-        } else {
-            System.out.println("No birds left in queue");
+        }
+        else{
+            System.out.println("No Birds Here");
         }
     }
 
@@ -71,8 +67,8 @@ public class BirdManager {
         if (currentBird != null) {
             Vector2 velocity = currentBird.getBody().getLinearVelocity();
             Vector2 birdPosition = currentBird.getBody().getPosition();
-            // Check if the bird's velocity is above a threshold
-            return (velocity.len() > 9f && birdPosition.dst(slingshotPosition) > 5f); // Adjust threshold based on your game
+            //return (velocity.len() > 10f && birdPosition.dst(slingshotPosition) > 5f ); // Adjust threshold based on your game
+            return (!(birdPosition.x==slingshotPosition.x/100));
         }
         return false;
     }

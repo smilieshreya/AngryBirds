@@ -27,48 +27,58 @@ public class winScreen implements Screen {
     private scoreBoard board;
     private TextButton backButton;
     private starsBoard stars;
-
+    private InputProcessorManager inputProcessorManager;
 
     public winScreen(AngryBirdsMain game) {
         this.game = game;
+        setupStage();
+        setupUI();
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private void setupStage() {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         generator = new FreeTypeFontGenerator(Gdx.files.internal("angrybirds-regular.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 50;
         BitmapFont font = generator.generateFont(parameter);
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
         skin.add("large-font", font, BitmapFont.class);
         skin.get(TextButton.TextButtonStyle.class).font = font;
+    }
 
-        backgroundTexture = new Texture(Gdx.files.internal("map2_dark.png")); //add the appropriate screen
+    private void setupUI() {
+        backgroundTexture = new Texture(Gdx.files.internal("map2_dark.png"));
         backgroundImage = new Image(backgroundTexture);
         stage.addActor(backgroundImage);
 
-        board = new scoreBoard(450,220,"scb.png");
+        board = new scoreBoard(450, 220, "scb.png");
         stage.addActor(board);
+
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = skin.getFont("large-font");
+
         Label levelLable = new Label("LEVEL I", labelStyle);
-        Label highScorelable = new Label("HIGHSCORE:",labelStyle);
+        Label highScorelable = new Label("HIGHSCORE:", labelStyle);
         Label winLabel = new Label("HURRAY! YOU WON", labelStyle);
         Label levelCleared = new Label("LEVEL CLEARED!", labelStyle);
-        Label score = new Label("SCORE:",labelStyle);
+        Label score = new Label("SCORE:", labelStyle);
         Integer Score = HUD.getScore();
-
         Label ScoreLabel = new Label(String.format("%07d", Score), labelStyle);
-        levelLable.setPosition(575,745);
-        highScorelable.setPosition(1000,745);
-        winLabel.setPosition(515,575);
-        levelCleared.setPosition(1050,575);
+
+        levelLable.setPosition(575, 745);
+        highScorelable.setPosition(1000, 745);
+        winLabel.setPosition(515, 575);
+        levelCleared.setPosition(1050, 575);
         score.setPosition(515, 475);
-        ScoreLabel.setPosition(515,400);
-        stars = new starsBoard(1100,420,"3stars.png");
-        backButton = new TextButton("BACK",skin);
+        ScoreLabel.setPosition(515, 400);
+
+        stars = new starsBoard(1100, 420, "3stars.png");
+
+        backButton = new TextButton("BACK TO HOME", skin);
         Table table = new Table();
         table.setFillParent(true);
-        table.top();
-        table.left();
+        table.top().left();
         table.add(backButton).pad(10);
         stage.addActor(levelLable);
         stage.addActor(highScorelable);
@@ -78,22 +88,21 @@ public class winScreen implements Screen {
         stage.addActor(ScoreLabel);
         stage.addActor(stars);
         stage.addActor(table);
-        Gdx.input.setInputProcessor(stage);
-        addListeners();
 
+        addListeners();
     }
+
     private void addListeners() {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game));// Switch to PauseScreen
+                game.setScreen(new LevelSelectorScreen(game));
             }
         });
     }
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -104,23 +113,19 @@ public class winScreen implements Screen {
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
@@ -130,4 +135,3 @@ public class winScreen implements Screen {
         skin.dispose();
     }
 }
-

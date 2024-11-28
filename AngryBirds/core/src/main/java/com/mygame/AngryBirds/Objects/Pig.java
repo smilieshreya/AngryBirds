@@ -1,5 +1,6 @@
 package com.mygame.AngryBirds.Objects;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -7,16 +8,18 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygame.AngryBirds.Screen.GameScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Pig extends Actor {
-    private static final List<Body> bodiesToDestroy = new ArrayList<>();
+    public static final List<Body> bodiesToDestroy = new ArrayList<>();
     protected float health;
     protected Sprite sprite;
     protected Body body;
     protected static final float PPM = 100f; // Pixels per meter
+    public Screen gamescreen;
 
     public Pig(World world, float x, float y, String texturePath) {
         health = 100f;
@@ -56,7 +59,7 @@ public abstract class Pig extends Actor {
         body.setUserData(this); // Set user data for collision
     }
 
-    private Sprite createSprite(String texturePath) {
+    public Sprite createSprite(String texturePath) {
         Sprite newSprite = new Sprite(new com.badlogic.gdx.graphics.Texture(com.badlogic.gdx.Gdx.files.internal(texturePath)));
         newSprite.setSize(1.0f * PPM, 1.0f * PPM);
         return newSprite;
@@ -86,9 +89,10 @@ public abstract class Pig extends Actor {
         }
     }
 
-    private void markForDestruction() {
+    public void markForDestruction() {
         if (body != null) {
             bodiesToDestroy.add(body);
+            GameScreen.pigs.remove(this);
             this.remove(); // Remove sprite from the stage
         }
     }
@@ -98,5 +102,8 @@ public abstract class Pig extends Actor {
             world.destroyBody(body);
         }
         bodiesToDestroy.clear();
+    }
+    public float returnHealth(){
+        return health;
     }
 }

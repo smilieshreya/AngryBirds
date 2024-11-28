@@ -73,7 +73,7 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                inputProcessorManager.popProcessor();  // Switch input back to the GameScreen
+                inputProcessorManager.popProcessor();// Switch input back to the GameScreen
                 game.setScreen(new GameScreen(game));  // Return to GameScreen
             }
         });

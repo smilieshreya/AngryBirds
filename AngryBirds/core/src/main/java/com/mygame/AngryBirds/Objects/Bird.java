@@ -13,7 +13,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Bird extends Actor implements InputProcessor {
+    private static final List<Body> bodiesToDestroy = new ArrayList<>();
     private Vector2 slingshotPosition;
     private float maxDragDistance = 150f;
     public Texture birdTexture;
@@ -125,6 +129,19 @@ public abstract class Bird extends Actor implements InputProcessor {
         birdBody.setAngularVelocity(0);
         isReadyToFire = true;
         isDragging = false;
+    }
+    private void markForDestruction() {
+        if (birdBody != null) {
+            bodiesToDestroy.add(birdBody);
+            this.remove(); // Remove sprite from the stage
+        }
+    }
+
+    public static void destroyMarkedBodies(World world) {
+        for (Body body : bodiesToDestroy) {
+            world.destroyBody(body);
+        }
+        bodiesToDestroy.clear();
     }
 
     @Override

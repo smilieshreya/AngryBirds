@@ -52,9 +52,9 @@ public class GameScreen implements Screen {
     private Bird bird3;
     private Pig pig;
     private Ground ground;
-    private List<Structure> structures = new ArrayList<>();
-    private List<Pig> pigs = new ArrayList<>();
-    private List<Bird> birds = new ArrayList<>();
+    public static List<Structure> structures = new ArrayList<>();
+    public static List<Pig> pigs = new ArrayList<>();
+    public static List<Bird> birds = new ArrayList<>();
     private Structure structure1;
     private Structure structure2;
     private Structure structure3;
@@ -74,6 +74,8 @@ public class GameScreen implements Screen {
     private Bird currentBird;
     private float accumulator = 0;
     private  Vector2 catapultPosition;
+    private boolean hasProcessedCurrentBird = false;
+    private int count;
 
     public GameScreen(AngryBirdsMain game) {
         this.game = game;
@@ -95,12 +97,16 @@ public class GameScreen implements Screen {
         BitmapFont font = generator.generateFont(parameter);
 
         pig = new BigPig(world, 1550, 250);
+        pigs.add(pig);
         pigListener = new PigContactListener();
         sling = new SlingShot(world, 340, 280);
         catapultPosition = new Vector2(315, 285);
         birdManager = new BirdManager(world, catapultPosition);
         bird = new RedBird(world, catapultPosition.x, catapultPosition.y);
-        bird2 = new BlueBird(world,200,280);
+        birds.add(bird);
+        bird2 = new RedBird(world,200,280);
+        birds.add(bird2);
+        birdListener = new BirdContactListener();
         //bird3 = new YellowBird(world,120,280);
 
         birdManager.addBird(bird);
@@ -162,9 +168,8 @@ public class GameScreen implements Screen {
         delegatingContactListener = new DelegatingContactListener();
         delegatingContactListener.addListener(structureListener);
         delegatingContactListener.addListener(pigListener);
-        //delegatingContactListener.addListener(birdListener);
+        delegatingContactListener.addListener(birdListener);
         world.setContactListener(delegatingContactListener);
-        // Gdx.input.setInputProcessor(stage);// Set the input processor for the stage
         addListeners();
     }
 
@@ -172,19 +177,23 @@ public class GameScreen implements Screen {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
+                //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
                 game.setScreen(new PauseScreen(game)); // Switch to PauseScreen
             }
         });
         restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                pigs.clear();
+                Gdx.input.setInputProcessor(null);
                 game.setScreen(new GameScreen(game)); // Restart the game
             }
         });
         winScreenButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                // Clear input processors
+                Gdx.input.setInputProcessor(null);
                 game.setScreen(new winScreen(game));
             }
         });
@@ -199,10 +208,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        //InputProcessorManager.pushProcessor(bird);
-        //InputProcessorManager.pushProcessor(stage);
-        //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(stage);
-        // Push the main game processor
     }
 
     @Override
@@ -230,17 +235,49 @@ public class GameScreen implements Screen {
         for (Structure structure : structures) {
             structure.update();
         }
-        if (birdManager.isBirdFired() && !birdManager.getCurrentBird().wasFired) {
-            System.out.println("Trigger");
+        if (birdManager.isBirdFired()  &&  birdManager.hasBirdsLeft()) {
             inputMultiplexer.removeProcessor(birdManager.getCurrentBird());
+            birds.remove(birdManager.getCurrentBird());
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    birdManager.getCurrentBird().wasFired = true;
-                    birdManager.resetNextBird(); // Call your bird reset method here
+                    birdManager.resetNextBird();
+                    System.out.println("More");
+                    birdManager.getCurrentBird().wasFired = true;// Call your bird reset method here
+                    hasProcessedCurrentBird = true;
                 }
             }, 2);
         }
+        if (!birdManager.isBirdFired()) {
+            hasProcessedCurrentBird = false;
+        }
+        for (Pig pig:pigs){
+            if (pig.returnHealth()<=0f){
+                pigs.remove(pig);
+            }
+        }
+        if (pigs.isEmpty()) {
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    game.setScreen(new winScreen(game));
+                }
+            });
+        }
+
+        if (birdListener.isBirdContactGround()) {
+            System.out.println("Bird hit the ground! Handle game logic.");
+            birdListener.resetFlags(); // Reset after handling
+        }
+        if (birdListener.isBirdContactPig()) {
+            System.out.println("Bird hit a pig! Handle game logic.");
+            birdListener.resetFlags(); // Reset after handling
+        }
+        if (birdListener.isBirdContactObject()) {
+            System.out.println("Bird hit an object! Handle game logic.");
+            birdListener.resetFlags(); // Reset after handling
+        }
+
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
     }
@@ -256,7 +293,7 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void resume() {
+    public  void resume() {
         // Handle resume logic
     }
 

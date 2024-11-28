@@ -12,6 +12,7 @@ before.png
 bigRed.png
 bird.png
 blueBird.png
+Corporal_Pig_Classic-Snicker.png
 cross.png
 FONT.fnt
 FONT.png
@@ -55,6 +56,8 @@ Soundon.png
 SsettingsButton.png
 structure.png
 tick.png
+White_Wooden_Box.jpg
+White_Wood_Plank.jpg
 Wooden_Box.png
 Wooden_Plank.png
 yellowBird.png

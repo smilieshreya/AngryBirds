@@ -79,7 +79,7 @@ public class LevelSelectorScreen implements Screen {
 
         level2Button.addListener(event -> {
             if (level2Button.isPressed()){
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new GameScreen2(game));
                 return true;
             }
             return false;
