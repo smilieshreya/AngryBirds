@@ -44,6 +44,9 @@ public class HUD {
         // Add the table to the stage
         stage.addActor(table);
     }
+    public static void setScore(int Score){
+        score = Score;
+    }
 
     public static int getScore() {
         return score;

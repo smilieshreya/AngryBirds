@@ -6,10 +6,16 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Ground {
 
     private Body groundBody;
+    public float positionSX;
+    public float positionEX;
+    public float positionY;
 
     public Ground(World world, float startX, float endX, float yPosition) {
         // Define the ground body
         BodyDef groundBodyDef = new BodyDef();
+        this.positionSX = startX;
+        this.positionEX = endX;
+        this.positionY = yPosition;
         groundBodyDef.type = BodyDef.BodyType.StaticBody;
 
         groundBodyDef.position.set(0, 0); // The body is static, position doesn't matter
@@ -34,5 +40,16 @@ public class Ground {
 
     public Body getBody() {
         return groundBody;
+    }
+
+    public float getPositionEX() {
+        return positionEX;
+    }
+
+    public float getPositionSX() {
+        return positionSX;
+    }
+    public float getPositionY(){
+        return positionY;
     }
 }

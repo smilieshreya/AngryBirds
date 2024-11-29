@@ -28,22 +28,25 @@ import com.mygame.AngryBirds.AngryBirdsMain;
 import com.mygame.AngryBirds.Managers.*;
 import com.mygame.AngryBirds.Objects.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen implements Screen {
-    private Stage stage;
+    public Stage stage;
     private Texture backgroundTexture;
     private Image backgroundImage;
     private Skin skin;
     private TextButton pauseButton;
     private TextButton restartButton;
+    private TextButton loadGameButton;
+    private TextButton saveGameButton;
     private HUD hud;
     private Viewport gamePort;
     private OrthographicCamera gameCamera;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
-    private World world;
+    public World world;
     private Box2DDebugRenderer debugRenderer;
     private Bird bird;
     private Bird bird2;
@@ -74,9 +77,13 @@ public class GameScreen implements Screen {
     private  Vector2 catapultPosition;
     private boolean hasProcessedCurrentBird = false;
     private int count;
+    private GameState currentState;
+    private int Level;
 
     public GameScreen(AngryBirdsMain game) {
         this.game = game;
+        this.Level = 1;
+        this.currentState = new GameState();
         inputMultiplexer = new InputMultiplexer();
         batch = new SpriteBatch();
         stage = new Stage(new FitViewport(AngryBirdsMain.WIDTH, AngryBirdsMain.HEIGHT));
@@ -146,6 +153,8 @@ public class GameScreen implements Screen {
         skin.get(TextButton.TextButtonStyle.class).font = font;
         pauseButton = new TextButton("PAUSE", skin);
         restartButton = new TextButton("RESTART", skin);
+        saveGameButton = new TextButton("SAVE GAME", skin);
+        loadGameButton = new TextButton("LOAD GAME", skin);
 
         ScoreLabel = new Label(String.format("Score: %07d",HUD.score), new Label.LabelStyle(font, Color.BLACK));
         Table table = new Table();
@@ -154,6 +163,8 @@ public class GameScreen implements Screen {
         table.left();
         table.add(pauseButton).pad(10);
         table.add(restartButton).pad(10);
+        table.add(loadGameButton).pad(10);
+        table.add(saveGameButton).pad(10);
         table.add(ScoreLabel).padLeft(1350);
         stage.addActor(table);
 
@@ -186,8 +197,46 @@ public class GameScreen implements Screen {
                 game.setScreen(new GameScreen(game)); // Restart the game
             }
         });
+        loadGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                loadGame("level1.txt");
+            }
+        });
+        saveGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                saveGame("level1.txt");
+            }
+        });
     }
 
+    public void saveGame(String filePath) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            GameState currentState = GameState.captureCurrentState(this);
+            oos.writeObject(currentState);
+            System.out.println("Game saved successfully!");
+        } catch (IOException e) {
+            System.err.println("Failed to save game: " + e.getMessage());
+        }
+    }
+
+    public void loadGame(String filePath) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
+            GameState loadedState = (GameState) ois.readObject();
+            loadedState.restoreGameState(this);
+            System.out.println("Game loaded successfully!");
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Failed to load game: " + e.getMessage());
+        }
+    }
+    public int getCurrentLevel(){
+        return Level;
+    }
+
+    public Vector2 getCatapultPosition() {
+        return catapultPosition;
+    }
 
     @Override
     public void show() {
@@ -220,12 +269,10 @@ public class GameScreen implements Screen {
         for (Structure structure : structures) {
             structure.update();
         }
-        System.out.println("Birds: "+birds.size());
-
         if (birdManager.isBirdFired()) {
             inputMultiplexer.removeProcessor(birdManager.getCurrentBird());
             birds.remove(birdManager.getCurrentBird());
-            System.out.println("Birds: "+birds.size());
+
             birdManager.resetNextBird();
             birdManager.getCurrentBird().wasFired = true;
             hasProcessedCurrentBird = true;
