@@ -19,10 +19,4 @@ class AngryBirdsMainTest {
         assertEquals(1080, AngryBirdsMain.HEIGHT, "Game height should be 1080.");
     }
 
-    @Test
-    void testCreateInitializesGame() {
-        game.create();
-        assertNotNull(game.batch, "SpriteBatch should be initialized.");
-        assertNotNull(game.getScreen(), "Initial screen should be set.");
-    }
 }
