@@ -28,8 +28,10 @@ public class winScreen implements Screen {
     private TextButton backButton;
     private starsBoard stars;
     private InputProcessorManager inputProcessorManager;
+    String levelNumber;
 
-    public winScreen(AngryBirdsMain game) {
+    public winScreen(AngryBirdsMain game,String level) {
+        this.levelNumber = level;
         this.game = game;
         setupStage();
         setupUI();
@@ -58,7 +60,7 @@ public class winScreen implements Screen {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = skin.getFont("large-font");
 
-        Label levelLable = new Label("LEVEL I", labelStyle);
+        Label levelLable = new Label(levelNumber, labelStyle);
         Label highScorelable = new Label("HIGHSCORE:", labelStyle);
         Label winLabel = new Label("HURRAY! YOU WON", labelStyle);
         Label levelCleared = new Label("LEVEL CLEARED!", labelStyle);

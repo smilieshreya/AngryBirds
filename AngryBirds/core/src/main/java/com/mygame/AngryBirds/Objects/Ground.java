@@ -11,8 +11,8 @@ public class Ground {
         // Define the ground body
         BodyDef groundBodyDef = new BodyDef();
         groundBodyDef.type = BodyDef.BodyType.StaticBody;
-        groundBodyDef.position.set(0, 0); // The body is static, position doesn't matter
 
+        groundBodyDef.position.set(0, 0); // The body is static, position doesn't matter
         // Create the ground body in the Box2D world
         groundBody = world.createBody(groundBodyDef);
 
@@ -26,6 +26,7 @@ public class Ground {
         groundFixtureDef.friction = 1.0f;
 
         groundBody.createFixture(groundFixtureDef);
+        groundBody.setUserData(this);
 
         // Dispose the shape after use
         groundShape.dispose();

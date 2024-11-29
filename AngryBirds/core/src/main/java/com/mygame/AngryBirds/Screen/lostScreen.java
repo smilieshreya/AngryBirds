@@ -28,7 +28,7 @@ public class lostScreen implements Screen {
     private starsBoard star;
 
 
-    public lostScreen(AngryBirdsMain game) {
+    public lostScreen(AngryBirdsMain game,String level) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -48,14 +48,13 @@ public class lostScreen implements Screen {
         stage.addActor(board);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = skin.getFont("large-font");
-        Label levelLable = new Label("LEVEL I", labelStyle);
+        Label levelLable = new Label(level, labelStyle);
         Label highScorelable = new Label("HIGHSCORE:",labelStyle);
         Label lossLabel = new Label("BETTER LUCK NEXT TIME :(", labelStyle);
         Label levelfailed = new Label("LEVEL LOST!", labelStyle);
         Label score = new Label("SCORE:",labelStyle);
-        Integer Score = HUD.getScore();
 
-        Label ScoreLabel = new Label(String.format("%07d", Score), labelStyle);
+        Label ScoreLabel = new Label(String.format("%07d", HUD.score), labelStyle);
         levelLable.setPosition(575,745);
         highScorelable.setPosition(1000,745);
         lossLabel.setPosition(515,575);
@@ -63,7 +62,7 @@ public class lostScreen implements Screen {
         score.setPosition(515, 475);
         ScoreLabel.setPosition(515,400);
         star = new starsBoard(1100,420,"0stars.png");
-        backButton = new TextButton("BACK",skin);
+        backButton = new TextButton("BACK TO HOME",skin);
         Table table = new Table();
         table.setFillParent(true);
         table.top();
@@ -85,7 +84,7 @@ public class lostScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new GameScreen(game));// Switch to PauseScreen
+                game.setScreen(new LevelSelectorScreen(game));// Switch to PauseScreen
             }
         });
     }

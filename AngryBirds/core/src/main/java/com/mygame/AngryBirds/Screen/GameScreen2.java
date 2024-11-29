@@ -38,8 +38,6 @@ public class GameScreen2 implements Screen {
     private Skin skin;
     private TextButton pauseButton;
     private TextButton restartButton;
-    private TextButton winScreenButton;
-    private TextButton lossScreenButton;
     private HUD hud;
     private Viewport gamePort;
     private OrthographicCamera gameCamera;
@@ -60,6 +58,13 @@ public class GameScreen2 implements Screen {
     private Structure structure3;
     private Structure structure4;
     private Structure structure5;
+    private Structure structure6;
+    private Structure structure7;
+    private Structure structure8;
+    private Structure structure9;
+    private Structure structure10;
+    private Structure structure11;
+    private Structure structure12;
     private SlingShot sling;
     private AngryBirdsMain game;
     private SpriteBatch batch;
@@ -96,7 +101,10 @@ public class GameScreen2 implements Screen {
         parameter.size = 36;
         BitmapFont font = generator.generateFont(parameter);
 
-        pig = new CorporalPig(world, 1550, 250);
+        birds.clear();
+        pigs.clear();
+        structures.clear();
+        pig = new CorporalPig(world, 1550, 380);
         pigs.add(pig);
         pigListener = new PigContactListener();
         sling = new SlingShot(world, 340, 280);
@@ -107,29 +115,44 @@ public class GameScreen2 implements Screen {
         bird2 = new YellowBird(world,200,280);
         birds.add(bird2);
         birdListener = new BirdContactListener();
-        //bird3 = new YellowBird(world,120,280);
+        bird3 = new YellowBird(world,120,280);
+        birds.add(bird3);
 
         birdManager.addBird(bird);
         birdManager.addBird(bird2);
-        //birdManager.addBird(bird3);
+        birdManager.addBird(bird3);
         birdManager.resetNextBird();
 
         float scale = 100f;
         ground = new Ground(world, 0 / scale, AngryBirdsMain.WIDTH / scale, 173 / scale);
-        structure1 = new WoodStructure(1420, 190, "White_Wooden_Box.jpg", world);
+        structure1 = new GlassStructure(1420, 190, "BLOCK_LIGHT_4X4_1.jpg", world);
         structures.add(structure1);
-        structure2 = new WoodStructure(1420, 270, "White_Wooden_Box.jpg", world);
+        structure2 = new GlassStructure(1420, 270, "BLOCK_LIGHT_4X4_1.jpg", world);
         structures.add(structure2);
-        structure3 = new WoodStructure(1600, 190, "White_Wooden_Box.jpg", world);
+        structure3 = new GlassStructure(1380, 190, "BLOCK_LIGHT_4X4_1.jpg", world);
         structures.add(structure3);
-        structure4 = new WoodStructure(1600, 270, "White_Wooden_Box.jpg", world);
+        structure4 = new GlassStructure(1380, 270, "BLOCK_LIGHT_4X4_1.jpg", world);
         structures.add(structure4);
-        structure5 = new WoodStructure(1520, 370, "White_Wood_Plank.jpg", world);
+        structure5 = new GlassStructure(1370, 350, "BLOCK_LIGHT_4X4_1.jpg", world);
         structures.add(structure5);
+        structure6 = new GlassStructure(1600, 190, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure6);
+        structure7 = new GlassStructure(1600, 270, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure7);
+        structure8 = new GlassStructure(1640, 190, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure8);
+        structure9 = new GlassStructure(1640, 270, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure9);
+        structure10 = new GlassStructure(1640, 350, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure10);
+        structure11 = new GlassStructure(1640, 420, "BLOCK_LIGHT_4X4_1.jpg", world);
+        structures.add(structure11);
+        structure12 = new GlassStructure(1520, 370, "BLOCK_LIGHT_10X1_1.jpg", world);
+        structures.add(structure12);
         structureListener = new StructureContactListener();
         stage.addActor(bird);
         stage.addActor(bird2);
-        //stage.addActor(bird3);
+        stage.addActor(bird3);
         stage.addActor(pig);
         stage.addActor(sling);
         stage.addActor(structure1);
@@ -137,6 +160,14 @@ public class GameScreen2 implements Screen {
         stage.addActor(structure3);
         stage.addActor(structure4);
         stage.addActor(structure5);
+        stage.addActor(structure6);
+        stage.addActor(structure7);
+        stage.addActor(structure8);
+        stage.addActor(structure9);
+        stage.addActor(structure10);
+        stage.addActor(structure11);
+        stage.addActor(structure12);
+
         gameCamera.zoom = 0.07f;
         // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
@@ -144,25 +175,21 @@ public class GameScreen2 implements Screen {
         skin.get(TextButton.TextButtonStyle.class).font = font;
         pauseButton = new TextButton("PAUSE", skin);
         restartButton = new TextButton("RESTART", skin);
-        winScreenButton = new TextButton("WIN", skin);
-        lossScreenButton = new TextButton("LOSS", skin);
 
-        ScoreLabel = new Label("Score: 0", new Label.LabelStyle(font, Color.BLACK));
+        ScoreLabel = new Label(String.format("Score: %07d",HUD.score), new Label.LabelStyle(font, Color.BLACK));
         Table table = new Table();
         table.setFillParent(true);
         table.top();
         table.left();
         table.add(pauseButton).pad(10);
         table.add(restartButton).pad(10);
-        table.add(winScreenButton).pad(10);
-        table.add(lossScreenButton).pad(10);
-        table.add(ScoreLabel).padLeft(950);
+        table.add(ScoreLabel).padLeft(1350);
         stage.addActor(table);
 
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(bird);
         inputMultiplexer.addProcessor(bird2);
-        //inputMultiplexer.addProcessor(bird3);
+        inputMultiplexer.addProcessor(bird3);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         delegatingContactListener = new DelegatingContactListener();
@@ -177,29 +204,15 @@ public class GameScreen2 implements Screen {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
                 game.setScreen(new PauseScreen(game)); // Switch to PauseScreen
             }
         });
         restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                pigs.clear();
                 Gdx.input.setInputProcessor(null);
                 game.setScreen(new GameScreen2(game)); // Restart the game
-            }
-        });
-        winScreenButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                // Clear input processors
-                Gdx.input.setInputProcessor(null);
-                game.setScreen(new winScreen(game));
-            }
-        });
-        lossScreenButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                game.setScreen(new lostScreen(game));
             }
         });
     }
@@ -212,8 +225,10 @@ public class GameScreen2 implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScoreLabel.setText(String.format("Score: %07d",HUD.score));
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+        hud.stage.act(delta);
         stage.act(Gdx.graphics.getDeltaTime());
 
         for (Actor actor : stage.getActors()) {
@@ -227,26 +242,24 @@ public class GameScreen2 implements Screen {
         bird.update();
         bird2.render();
         bird2.update();
-        //bird3.render();
-        //bird3.update();
+        bird3.render();
+        bird3.update();
         StructureContactListener.destroyMarkedBodies(world);
         Pig.destroyMarkedBodies(world);
         for (Structure structure : structures) {
             structure.update();
         }
-        if (birdManager.isBirdFired()  &&  birdManager.hasBirdsLeft()) {
+        System.out.println("Birds: "+birds.size());
+
+        if (birdManager.isBirdFired()) {
             inputMultiplexer.removeProcessor(birdManager.getCurrentBird());
             birds.remove(birdManager.getCurrentBird());
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    birdManager.resetNextBird();
-                    System.out.println("More");
-                    birdManager.getCurrentBird().wasFired = true;// Call your bird reset method here
-                    hasProcessedCurrentBird = true;
-                }
-            }, 2);
+            System.out.println("Birds: "+birds.size());
+            birdManager.resetNextBird();
+            birdManager.getCurrentBird().wasFired = true;
+            hasProcessedCurrentBird = true;
         }
+
         if (!birdManager.isBirdFired()) {
             hasProcessedCurrentBird = false;
         }
@@ -259,11 +272,20 @@ public class GameScreen2 implements Screen {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
-                    game.setScreen(new winScreen(game));
+                    Gdx.input.setInputProcessor(null);
+                    game.setScreen(new winScreen(game,"LEVEL II"));
                 }
             });
-            game.setScreen(new winScreen(game));
+        }else{
+            if(birds.isEmpty() && birdManager.getCurrentBird().wasFired && (birdListener.isBirdContactGround() ||birdListener.isBirdContactObject())){
+                if(!pigs.isEmpty()){
+                    Gdx.input.setInputProcessor(null);
+                    game.setScreen(new lostScreen(game,"LEVEL II"));
+                }
+            }
         }
+
+
         if (birdListener.isBirdContactGround()) {
             System.out.println("Bird hit the ground! Handle game logic.");
             birdListener.resetFlags(); // Reset after handling

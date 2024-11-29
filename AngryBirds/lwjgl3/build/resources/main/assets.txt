@@ -11,7 +11,10 @@ BACKGROUNDS_GE_1.png
 before.png
 bigRed.png
 bird.png
+BLOCK_LIGHT_10X1_1.jpg
+BLOCK_LIGHT_4X4_1.jpg
 blueBird.png
+Bomb.jpg
 Corporal_Pig_Classic-Snicker.png
 cross.png
 FONT.fnt
@@ -51,9 +54,13 @@ restart.png
 scb.png
 Settingbutton.png
 slingShotII.png
+Smoothcheeks.jpg
 something.png
 Soundon.png
 SsettingsButton.png
+Stone_Box.jpg
+Stone_Plank.jpg
+Stone_Plank_with_Markings.jpg
 structure.png
 tick.png
 White_Wooden_Box.jpg

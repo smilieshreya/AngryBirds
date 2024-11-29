@@ -18,7 +18,7 @@ import java.util.List;
 
 public abstract class Bird extends Actor implements InputProcessor {
     private static final List<Body> bodiesToDestroy = new ArrayList<>();
-    private Vector2 slingshotPosition;
+    public Vector2 slingshotPosition;
     private float maxDragDistance = 150f;
     public Texture birdTexture;
     public Body birdBody;
@@ -70,6 +70,7 @@ public abstract class Bird extends Actor implements InputProcessor {
         fixtureDef.restitution = 0.3f;
 
         birdBody = world.createBody(bodyDef);
+        birdBody.setUserData(this);
         birdBody.setLinearDamping(0.5f);
         birdBody.createFixture(fixtureDef);
 
@@ -176,7 +177,7 @@ public abstract class Bird extends Actor implements InputProcessor {
             isDragging = false;
             Vector2 launchVelocity = slingshotPosition.cpy().sub(dragPosition).scl(0.1f);  // Adjust the scaling factor
             birdBody.setLinearVelocity(launchVelocity.x, launchVelocity.y);
-            isReadyToFire = false;
+            isReadyToFire = true;
         }
         return true;
     }

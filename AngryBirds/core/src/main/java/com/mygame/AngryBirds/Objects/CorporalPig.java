@@ -6,18 +6,27 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygame.AngryBirds.Screen.GameScreen;
 import com.mygame.AngryBirds.Screen.GameScreen2;
+import com.mygame.AngryBirds.Screen.HUD;
 
 public class CorporalPig extends Pig {
-
     public CorporalPig(World world, float x, float y) {
         super(world, x, y, "Corporal_Pig_Classic-Snicker.png");
+        health = 140f;
     }
 
     @Override
     public Sprite createSprite(String texturePath) {
         Sprite newSprite = new Sprite(new com.badlogic.gdx.graphics.Texture(com.badlogic.gdx.Gdx.files.internal(texturePath)));
-        newSprite.setSize(1.2f * PPM, 1.1f * PPM);
+        newSprite.setSize(1.24f * PPM, 1.1f * PPM);
         return newSprite;
+    }
+    @Override
+    public void takeDamage(float damage) {
+        health -= damage;
+        if (health <= 0) {
+            HUD.addScore(5500);
+            markForDestruction();
+        }
     }
 
     @Override

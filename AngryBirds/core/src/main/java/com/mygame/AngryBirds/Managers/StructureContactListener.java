@@ -2,6 +2,7 @@ package com.mygame.AngryBirds.Managers;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygame.AngryBirds.Objects.Structure;
+import com.mygame.AngryBirds.Screen.HUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,8 @@ public class StructureContactListener implements ContactListener {
 
     private void handleStructureCollision(Structure structure, Body otherBody) {
         float impactVelocity = otherBody.getLinearVelocity().len();
-        if (impactVelocity > 2.5f) { // Threshold for breaking structure
+        if (impactVelocity > 2.5f) {// Threshold for breaking structure
+            HUD.addScore(1000);
             markBodyForDestruction(structure);
         }
     }
