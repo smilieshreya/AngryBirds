@@ -10,11 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public abstract class Structure extends Image {
     protected Body body;
     protected World world;
+    public String Itexture;
     protected static final float PPM = 100f; // Pixels per meter
+    public float positionX;
+    public float positionY;
 
     // Constructor for Structure
     public Structure(float x, float y, String img, World world) {
         super(new Texture(Gdx.files.internal(img)));
+        this.positionX = x;
+        this.positionY = y;
+        this.Itexture = img;
         this.world = world;
 
         // Set the position of the Image
@@ -55,8 +61,17 @@ public abstract class Structure extends Image {
         Vector2 position = body.getPosition();
         setPosition((position.x * PPM) - getWidth() / 2, (position.y * PPM) - getHeight() / 2);
     }
+    public String getTextureName(){
+        return Itexture;
+    }
 
     public Body getBody() {
         return body;
+    }
+    public float getPostitionX(){
+        return positionX;
+    }
+    public float getPostitionY(){
+        return positionY;
     }
 }

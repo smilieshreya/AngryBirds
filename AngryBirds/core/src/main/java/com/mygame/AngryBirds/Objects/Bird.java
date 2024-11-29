@@ -145,6 +145,10 @@ public abstract class Bird extends Actor implements InputProcessor {
         bodiesToDestroy.clear();
     }
 
+    public Vector2 getInitialPosition() {
+        return initialPosition;
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (isReadyToFire) {

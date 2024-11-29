@@ -38,6 +38,8 @@ public class GameScreen2 implements Screen {
     private Skin skin;
     private TextButton pauseButton;
     private TextButton restartButton;
+    private TextButton loadGameButton;
+    private TextButton saveGameButton;
     private HUD hud;
     private Viewport gamePort;
     private OrthographicCamera gameCamera;
@@ -175,6 +177,8 @@ public class GameScreen2 implements Screen {
         skin.get(TextButton.TextButtonStyle.class).font = font;
         pauseButton = new TextButton("PAUSE", skin);
         restartButton = new TextButton("RESTART", skin);
+        saveGameButton = new TextButton("SAVE GAME", skin);
+        loadGameButton = new TextButton("LOAD GAME", skin);
 
         ScoreLabel = new Label(String.format("Score: %07d",HUD.score), new Label.LabelStyle(font, Color.BLACK));
         Table table = new Table();
@@ -183,6 +187,8 @@ public class GameScreen2 implements Screen {
         table.left();
         table.add(pauseButton).pad(10);
         table.add(restartButton).pad(10);
+        table.add(loadGameButton).pad(10);
+        table.add(saveGameButton).pad(10);
         table.add(ScoreLabel).padLeft(1350);
         stage.addActor(table);
 
@@ -213,6 +219,17 @@ public class GameScreen2 implements Screen {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 Gdx.input.setInputProcessor(null);
                 game.setScreen(new GameScreen2(game)); // Restart the game
+            }
+        });
+        loadGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+
+            }
+        });
+        saveGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
             }
         });
     }

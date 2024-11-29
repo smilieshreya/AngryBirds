@@ -20,10 +20,14 @@ public abstract class Pig extends Actor {
     protected Body body;
     protected static final float PPM = 100f; // Pixels per meter
     public Screen gamescreen;
+    public float positionX;
+    public float positionY;
+
 
     public Pig(World world, float x, float y, String texturePath) {
         health = 100f;
-
+        this.positionX = x;
+        this.positionY = y;
         // Initialize the sprite
         sprite = createSprite(texturePath);
         sprite.setOriginCenter();
@@ -105,5 +109,17 @@ public abstract class Pig extends Actor {
     }
     public float returnHealth(){
         return health;
+    }
+    public void setHealth(float HealthValue){
+        health = HealthValue;
+    }
+    public float getPostitionX(){
+        return positionX;
+    }
+    public float getPostitionY(){
+        return positionY;
+    }
+    public Body getBody(){
+        return body;
     }
 }
