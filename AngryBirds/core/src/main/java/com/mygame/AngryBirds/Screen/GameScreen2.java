@@ -169,8 +169,8 @@ public class GameScreen2 implements Screen {
         stage.addActor(structure10);
         stage.addActor(structure11);
         stage.addActor(structure12);
+        //gameCamera.zoom = 0.07f;
 
-        gameCamera.zoom = 0.07f;
         // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -210,7 +210,6 @@ public class GameScreen2 implements Screen {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
                 game.setScreen(new PauseScreen(game)); // Switch to PauseScreen
             }
         });
@@ -266,12 +265,9 @@ public class GameScreen2 implements Screen {
         for (Structure structure : structures) {
             structure.update();
         }
-        System.out.println("Birds: "+birds.size());
-
         if (birdManager.isBirdFired()) {
             inputMultiplexer.removeProcessor(birdManager.getCurrentBird());
             birds.remove(birdManager.getCurrentBird());
-            System.out.println("Birds: "+birds.size());
             birdManager.resetNextBird();
             birdManager.getCurrentBird().wasFired = true;
             hasProcessedCurrentBird = true;
@@ -301,22 +297,16 @@ public class GameScreen2 implements Screen {
                 }
             }
         }
-
-
         if (birdListener.isBirdContactGround()) {
-            System.out.println("Bird hit the ground! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
+            birdListener.resetFlags();
         }
         if (birdListener.isBirdContactPig()) {
-            System.out.println("Bird hit a pig! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
+            birdListener.resetFlags();
         }
         if (birdListener.isBirdContactObject()) {
-            System.out.println("Bird hit an object! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
+            birdListener.resetFlags();
         }
-
-        debugRenderer.render(world, gameCamera.combined);
+        //debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
     }
 
@@ -327,17 +317,14 @@ public class GameScreen2 implements Screen {
 
     @Override
     public void pause() {
-        // Handle pause logic
     }
 
     @Override
     public  void resume() {
-        // Handle resume logic
     }
 
     @Override
     public void hide() {
-        // Handle hide logic
     }
 
     @Override
@@ -346,7 +333,6 @@ public class GameScreen2 implements Screen {
         backgroundTexture.dispose();
         skin.dispose();
         batch.dispose();
-        //RedBird.getTexture().dispose();
         if (generator != null) generator.dispose();
     }
 }

@@ -29,9 +29,6 @@ public class HomeScreen implements Screen {
     private Texture playTexture;
     private Texture settingsTexture;
     private Texture exitTexture;
-//    private ImageButton playButton;
-//    private ImageButton settingsButton;
-//    private ImageButton exitButton;
     private FreeTypeFontGenerator generator;
     private FreeTypeFontParameter parameter;
     private TextButton playButton;
@@ -68,16 +65,7 @@ public class HomeScreen implements Screen {
         playButton = new TextButton("PLAY",skin);
         settingsButton = new TextButton("SETTINGS",skin);
         exitButton = new TextButton("EXIT", skin);
-        
-        //loading images for the buttons
-//        playTexture = new Texture(Gdx.files.internal("playButton.png"));
-//        settingsTexture= new Texture(Gdx.files.internal("SsettingsButton.png"));
-//        exitTexture = new Texture(Gdx.files.internal("quitButton.png"));
-//        
-//        //creating image buttons;
-//        playButton = new ImageButton(new TextureRegionDrawable(playTexture));
-//        settingsButton = new ImageButton(new TextureRegionDrawable(settingsTexture));
-//        exitButton = new ImageButton(new TextureRegionDrawable(exitTexture));
+
         
         //this will arrange the buttons on the screen;
         Table table = new Table();

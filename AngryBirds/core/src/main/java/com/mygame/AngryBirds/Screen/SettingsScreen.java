@@ -25,7 +25,7 @@ public class SettingsScreen implements Screen {
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
     public SettingsScreen(AngryBirdsMain game) {
-        this.game = game;  // Store reference to main game instance
+        this.game = game;
         stage = new Stage(new ScreenViewport());
 
         backgroundTexture = new Texture(Gdx.files.internal("background.png"));
@@ -63,7 +63,7 @@ public class SettingsScreen implements Screen {
         stage.addActor(headingLabel);
         stage.addActor(table);
 
-        Gdx.input.setInputProcessor(stage);  // Set stage to handle inputs
+        Gdx.input.setInputProcessor(stage);
 
         // Add listeners to buttons
         addListeners();

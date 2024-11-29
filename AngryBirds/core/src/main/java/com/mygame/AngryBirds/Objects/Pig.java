@@ -32,14 +32,12 @@ public abstract class Pig extends Actor {
         sprite = createSprite(texturePath);
         sprite.setOriginCenter();
 
-        // Create the Box2D body
         createPhysicsBody(world, x / PPM, y / PPM);
 
-        // Sync sprite position
         syncSpriteWithBody();
     }
 
-    // Abstract method for setting fixture properties
+    // setting fixture properties
     protected abstract void defineFixture(FixtureDef fixtureDef);
 
     private void createPhysicsBody(World world, float x, float y) {
@@ -50,7 +48,7 @@ public abstract class Pig extends Actor {
         body = world.createBody(bodyDef);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.55f); // Default radius, can be overridden
+        shape.setRadius(0.55f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -60,7 +58,7 @@ public abstract class Pig extends Actor {
         body.createFixture(fixtureDef);
         shape.dispose();
 
-        body.setUserData(this); // Set user data for collision
+        body.setUserData(this); //user data for collision
     }
 
     public Sprite createSprite(String texturePath) {

@@ -145,7 +145,7 @@ public class GameScreen implements Screen {
         stage.addActor(structure3);
         stage.addActor(structure4);
         stage.addActor(structure5);
-        gameCamera.zoom = 0.07f;
+        //gameCamera.zoom = 0.07f;
 
         // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
@@ -301,8 +301,16 @@ public class GameScreen implements Screen {
                 }
             }
         }
-
-        debugRenderer.render(world, gameCamera.combined);
+        if (birdListener.isBirdContactGround()) {
+            birdListener.resetFlags();
+        }
+        if (birdListener.isBirdContactPig()) {
+            birdListener.resetFlags();
+        }
+        if (birdListener.isBirdContactObject()) {
+            birdListener.resetFlags();
+        }
+        //debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
     }
 

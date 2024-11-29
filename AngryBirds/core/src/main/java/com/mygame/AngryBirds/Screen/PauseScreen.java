@@ -62,9 +62,8 @@ public class PauseScreen implements Screen {
         table.add(homeButton).pad(10);
         stage.addActor(table);
 
-        Gdx.input.setInputProcessor(stage);  // Set stage to handle inputs
+        Gdx.input.setInputProcessor(stage);
 
-        // Add listeners to buttons
         addListeners();
     }
 
@@ -73,8 +72,8 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                inputProcessorManager.popProcessor();// Switch input back to the GameScreen
-                game.setScreen(new GameScreen(game));  // Return to GameScreen
+                inputProcessorManager.popProcessor();
+                game.setScreen(new GameScreen(game));
             }
         });
 
@@ -89,7 +88,7 @@ public class PauseScreen implements Screen {
         levelMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new LevelSelectorScreen(game));  // Return to LevelSelectorScreen
+                game.setScreen(new LevelSelectorScreen(game));
             }
         });
 
@@ -111,9 +110,9 @@ public class PauseScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);  // Clear screen
-        stage.act(Gdx.graphics.getDeltaTime());    // Process actions
-        stage.draw();                              // Draw the stage
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     @Override
@@ -123,17 +122,14 @@ public class PauseScreen implements Screen {
 
     @Override
     public void pause() {
-        // Handle pause logic if necessary
     }
 
     @Override
     public void resume() {
-        // Handle resume logic if necessary
     }
 
     @Override
     public void hide() {
-        // Hide logic
     }
 
     @Override

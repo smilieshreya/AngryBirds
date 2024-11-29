@@ -1,6 +1,5 @@
 package com.mygame.AngryBirds.Objects;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
@@ -41,8 +40,8 @@ public class CrownPig extends Pig {
 
     @Override
     protected void defineFixture(FixtureDef fixtureDef) {
-        fixtureDef.density = 1.1f; //
-        fixtureDef.friction = 0.4f; //
-        fixtureDef.restitution = 0.4f; //
+        fixtureDef.density = 1.1f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.4f;
     }
 }

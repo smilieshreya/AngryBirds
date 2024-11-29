@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class GlassStructure extends Structure {
 
-    // Constructor for WoodStructure
     public GlassStructure(float x, float y, String img, World world) {
         super(x, y, img, world);
     }
@@ -15,6 +14,6 @@ public class GlassStructure extends Structure {
     protected void defineFixture(FixtureDef fixtureDef) {
         fixtureDef.density = 1f;
         fixtureDef.friction = 0.8f;
-        fixtureDef.restitution = 0.1f; // Lower bounciness
+        fixtureDef.restitution = 0.1f; // bounciness
     }
 }

@@ -17,15 +17,13 @@ public class BirdContactListener implements ContactListener {
 
     @Override
     public void beginContact(Contact contact) {
-        // Retrieve the fixtures involved in the contact
+
         Object userDataA = contact.getFixtureA().getBody().getUserData();
         Object userDataB = contact.getFixtureB().getBody().getUserData();
 
-        // Check if one of the fixtures is a Bird
         if (userDataA instanceof Bird || userDataB instanceof Bird) {
             Object otherObject = (userDataA instanceof Bird) ? userDataB : userDataA;
 
-            // Determine what the bird made contact with
             if (otherObject instanceof Ground) {
                 birdContactGround = true;
                 System.out.println("Bird made contact with the ground.");
@@ -41,20 +39,17 @@ public class BirdContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        // You can handle the end of contact if necessary, e.g., resetting flags
     }
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        // Optional: Add behavior before the collision is resolved
     }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
-        // Optional: Add behavior after the collision is resolved
     }
 
-    // Getters to check contact flags
+
     public boolean isBirdContactGround() {
         return birdContactGround;
     }
@@ -67,7 +62,6 @@ public class BirdContactListener implements ContactListener {
         return birdContactObject;
     }
 
-    // Reset flags after processing
     public void resetFlags() {
         birdContactGround = false;
         birdContactPig = false;

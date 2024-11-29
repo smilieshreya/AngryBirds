@@ -39,8 +39,6 @@ public class PigContactListener implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {}
 
     private float calculateDamage(float velocity) {
-        // Define a formula to calculate damage
-        // For example, linear damage scaling:
         return Math.min(velocity * 50f, 100f); // Cap damage at 100
     }
 }

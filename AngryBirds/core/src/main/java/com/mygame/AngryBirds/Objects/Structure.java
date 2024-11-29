@@ -1,4 +1,3 @@
-// Abstract Structure class
 package com.mygame.AngryBirds.Objects;
 
 import com.badlogic.gdx.Gdx;
@@ -23,14 +22,11 @@ public abstract class Structure extends Image {
         this.Itexture = img;
         this.world = world;
 
-        // Set the position of the Image
         setPosition(x, y);
-
-        // Create Box2D Body and Fixture for Structure
         createPhysicsBody(x / PPM, y / PPM);
     }
 
-    // Abstract method to define structure-specific properties
+    //  method to define structure-specific properties
     protected abstract void defineFixture(FixtureDef fixtureDef);
 
     // Initialize Box2D body for collision and physics
@@ -48,7 +44,6 @@ public abstract class Structure extends Image {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
 
-        // Call the abstract method to allow subclasses to customize fixture properties
         defineFixture(fixtureDef);
 
         body.createFixture(fixtureDef);

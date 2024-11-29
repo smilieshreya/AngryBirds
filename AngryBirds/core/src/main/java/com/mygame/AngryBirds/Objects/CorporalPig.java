@@ -40,8 +40,8 @@ public class CorporalPig extends Pig {
 
     @Override
     protected void defineFixture(FixtureDef fixtureDef) {
-        fixtureDef.density = 1.0f; //
-        fixtureDef.friction = 0.4f; // Slightly less friction
-        fixtureDef.restitution = 0.5f; // Moderate bounciness
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.5f; //bounciness
     }
 }

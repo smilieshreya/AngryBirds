@@ -44,7 +44,7 @@ public abstract class Bird extends Actor implements InputProcessor {
         this.batch = new SpriteBatch();
         this.shapeRenderer = new ShapeRenderer();
 
-        // Initialize bird texture from child class
+        // Initialize bird texture
         this.birdTexture = new Texture(Gdx.files.internal(getTexturePath()));
 
         createBirdBody(x, y + 100);
@@ -179,7 +179,7 @@ public abstract class Bird extends Actor implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (isDragging) {
             isDragging = false;
-            Vector2 launchVelocity = slingshotPosition.cpy().sub(dragPosition).scl(0.1f);  // Adjust the scaling factor
+            Vector2 launchVelocity = slingshotPosition.cpy().sub(dragPosition).scl(0.1f);  // adjust  scaling factor
             birdBody.setLinearVelocity(launchVelocity.x, launchVelocity.y);
             isReadyToFire = true;
         }
