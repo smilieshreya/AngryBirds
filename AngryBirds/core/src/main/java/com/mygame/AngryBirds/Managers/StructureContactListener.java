@@ -1,7 +1,9 @@
 package com.mygame.AngryBirds.Managers;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygame.AngryBirds.Objects.Structure;
+import com.mygame.AngryBirds.Screen.GameScreen;
 import com.mygame.AngryBirds.Screen.HUD;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 
 public class StructureContactListener implements ContactListener {
     private static final List<Body> bodiesToDestroy = new ArrayList<>();
+    public Screen gamescreen;
 
     @Override
     public void beginContact(Contact contact) {
@@ -38,6 +41,7 @@ public class StructureContactListener implements ContactListener {
         Body body = structure.getBody();
         if (body != null) {
             bodiesToDestroy.add(body);
+            GameScreen.structures.remove(structure);
             structure.remove(); // Remove sprite from the stage
         }
     }

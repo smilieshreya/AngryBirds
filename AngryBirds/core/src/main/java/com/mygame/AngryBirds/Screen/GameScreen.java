@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygame.AngryBirds.AngryBirdsMain;
@@ -147,6 +146,7 @@ public class GameScreen implements Screen {
         stage.addActor(structure4);
         stage.addActor(structure5);
         gameCamera.zoom = 0.07f;
+
         // For creation of the buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -186,7 +186,6 @@ public class GameScreen implements Screen {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //com.mygame.AngryBirds.Screen.InputProcessorManager.pushProcessor(new PauseScreenInputProcessor()); // Switch to PauseScreen input
                 game.setScreen(new PauseScreen(game)); // Switch to PauseScreen
             }
         });
@@ -303,20 +302,6 @@ public class GameScreen implements Screen {
             }
         }
 
-
-        if (birdListener.isBirdContactGround()) {
-            System.out.println("Bird hit the ground! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
-        }
-        if (birdListener.isBirdContactPig()) {
-            System.out.println("Bird hit a pig! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
-        }
-        if (birdListener.isBirdContactObject()) {
-            System.out.println("Bird hit an object! Handle game logic.");
-            birdListener.resetFlags(); // Reset after handling
-        }
-
         debugRenderer.render(world, gameCamera.combined);
         world.step(1 / 60f, 6, 2);
     }
@@ -328,17 +313,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-        // Handle pause logic
     }
 
     @Override
     public  void resume() {
-        // Handle resume logic
     }
 
     @Override
     public void hide() {
-        // Handle hide logic
     }
 
     @Override
@@ -347,7 +329,6 @@ public class GameScreen implements Screen {
         backgroundTexture.dispose();
         skin.dispose();
         batch.dispose();
-        //RedBird.getTexture().dispose();
         if (generator != null) generator.dispose();
     }
 }

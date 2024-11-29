@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class GameState implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Detailed game state capture
     public int score;
     public int level;
     public List<BirdState> birdStates;
@@ -22,27 +21,28 @@ public class GameState implements Serializable {
     public float worldGravity;
     public Vector2 catapultPosition;
 
-    // Nested state classes
     public static class BirdState implements Serializable {
         public float x, y;
         public String birdType;
         public boolean wasFired;
         public float velocityX, velocityY;
+        public float angle;
     }
 
     public static class PigState implements Serializable {
         public float x, y;
         public float health;
         public String pigType;
+        public float angle;
     }
 
     public static class StructureState implements Serializable {
         public float x, y;
         public String structureType;
         public String textureName;
+        public float angle;
     }
 
-    // Capture method for current game state
     public static GameState captureCurrentState(GameScreen gameScreen) {
         GameState state = new GameState();
         state.score = HUD.getScore();
@@ -50,17 +50,14 @@ public class GameState implements Serializable {
         state.worldGravity = gameScreen.world.getGravity().y;
         state.catapultPosition = gameScreen.getCatapultPosition();
 
-        // Capture bird states
         state.birdStates = gameScreen.birds.stream()
                 .map(GameState::captureBirdState)
                 .collect(Collectors.toList());
 
-        // Capture pig states
         state.pigStates = gameScreen.pigs.stream()
                 .map(GameState::capturePigState)
                 .collect(Collectors.toList());
 
-        // Capture structure states
         state.structureStates = gameScreen.structures.stream()
                 .map(GameState::captureStructureState)
                 .collect(Collectors.toList());
@@ -68,7 +65,6 @@ public class GameState implements Serializable {
         return state;
     }
 
-    // Helper methods to capture individual object states
     private static BirdState captureBirdState(Bird bird) {
         BirdState state = new BirdState();
         state.x = bird.getInitialPosition().x;
@@ -77,6 +73,7 @@ public class GameState implements Serializable {
         state.wasFired = bird.wasFired;
         state.velocityX = bird.getBody().getLinearVelocity().x;
         state.velocityY = bird.getBody().getLinearVelocity().y;
+        state.angle = bird.getBody().getAngle();
         return state;
     }
 
@@ -86,6 +83,7 @@ public class GameState implements Serializable {
         state.y = pig.getPostitionY();
         state.health = pig.returnHealth();
         state.pigType = pig.getClass().getSimpleName();
+        state.angle = pig.getBody().getAngle();
         return state;
     }
 
@@ -95,76 +93,64 @@ public class GameState implements Serializable {
         state.y = structure.getPostitionY();
         state.structureType = structure.getClass().getSimpleName();
         state.textureName = structure.getTextureName();
+        state.angle = structure.getBody().getAngle();
         return state;
     }
 
-    // Restoration method
     public void restoreGameState(GameScreen gameScreen) {
         clearCurrentGameWorld(gameScreen);
-        // Clear existing game objects
-        gameScreen.birds.clear();
-        gameScreen.pigs.clear();
-        gameScreen.structures.clear();
 
-        // Restore score and level
         HUD.setScore(this.score);
-        //setCurrentLevel(this.level);
 
-        // Restore world gravity
         gameScreen.world.setGravity(new Vector2(0, this.worldGravity));
 
-        // Restore birds
         for (BirdState birdState : this.birdStates) {
             Bird bird = createBirdFromState(gameScreen.world, birdState);
             gameScreen.birds.add(bird);
             gameScreen.stage.addActor(bird);
         }
 
-        // Restore pigs
         for (PigState pigState : this.pigStates) {
             Pig pig = createPigFromState(gameScreen.world, pigState);
             gameScreen.pigs.add(pig);
             gameScreen.stage.addActor(pig);
         }
 
-        // Restore structures
         for (StructureState structureState : this.structureStates) {
             Structure structure = createStructureFromState(gameScreen.world, structureState);
             gameScreen.structures.add(structure);
             gameScreen.stage.addActor(structure);
         }
     }
+
     private void clearCurrentGameWorld(GameScreen gameScreen) {
-        // Clear birds
         for (Bird bird : gameScreen.birds) {
-            bird.remove(); // Remove bird from stage
+            bird.remove();
             gameScreen.world.destroyBody(bird.getBody()); // Destroy bird body from world
         }
         gameScreen.birds.clear();
 
-        // Clear pigs
+
         for (Pig pig : gameScreen.pigs) {
-            pig.remove(); // Remove pig from stage
-            gameScreen.world.destroyBody(pig.getBody()); // Destroy pig body from world
+            pig.remove();
+            gameScreen.world.destroyBody(pig.getBody());
         }
         gameScreen.pigs.clear();
 
         // Clear structures
         for (Structure structure : gameScreen.structures) {
-            structure.remove(); // Remove structure from stage
-            gameScreen.world.destroyBody(structure.getBody()); // Destroy structure body from world
+            structure.remove();
+            gameScreen.world.destroyBody(structure.getBody());
         }
         gameScreen.structures.clear();
     }
 
-    // Factory methods for object recreation (placeholder implementations)
     private Bird createBirdFromState(World world, BirdState state) {
         Bird bird = null;
         switch (state.birdType) {
             case "RedBird":
                 bird = new RedBird(world, state.x, state.y);
                 break;
-            // Add other bird types
             case "YellowBird":
                 bird = new YellowBird(world,state.x,state.y);
                 break;
@@ -179,7 +165,6 @@ public class GameState implements Serializable {
         return bird;
     }
 
-    // Similar methods for createPigFromState and createStructureFromState
     private Pig createPigFromState(World world, PigState state){
         Pig pig = null;
         switch (state.pigType){

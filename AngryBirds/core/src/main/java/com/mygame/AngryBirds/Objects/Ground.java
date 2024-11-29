@@ -11,7 +11,7 @@ public class Ground {
     public float positionY;
 
     public Ground(World world, float startX, float endX, float yPosition) {
-        // Define the ground body
+        //ground body
         BodyDef groundBodyDef = new BodyDef();
         this.positionSX = startX;
         this.positionEX = endX;
@@ -19,14 +19,14 @@ public class Ground {
         groundBodyDef.type = BodyDef.BodyType.StaticBody;
 
         groundBodyDef.position.set(0, 0); // The body is static, position doesn't matter
-        // Create the ground body in the Box2D world
+        //  ground body in the Box2D world
         groundBody = world.createBody(groundBodyDef);
 
-        // Define the ground shape as an edge
+        //  ground shape as an edge
         EdgeShape groundShape = new EdgeShape();
         groundShape.set(new Vector2(startX, yPosition), new Vector2(endX, yPosition));
 
-        // Create a fixture for the ground
+        // fixture for the ground
         FixtureDef groundFixtureDef = new FixtureDef();
         groundFixtureDef.shape = groundShape;
         groundFixtureDef.friction = 1.0f;
@@ -34,7 +34,6 @@ public class Ground {
         groundBody.createFixture(groundFixtureDef);
         groundBody.setUserData(this);
 
-        // Dispose the shape after use
         groundShape.dispose();
     }
 
