@@ -8,3 +8,4 @@
     . From inside the folder, Right Click and Select "Open In Terminal"
     . In the termial now type "./gradlew build" (without the apostrophes) This will build the project
     . Next type "./gradlew lwjgl3:run" (without the apostrophes) to run the project
+    . For running JUnit tests type "./gradlew test" (without the apostrophes) this will run the tests.
